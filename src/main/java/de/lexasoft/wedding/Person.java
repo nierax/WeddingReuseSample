@@ -25,6 +25,7 @@ import java.time.temporal.ChronoUnit;
  */
 public class Person {
 
+	private Identity id;
 	private FamilyName familyName;
 	private FirstName firstName;
 	private Sex sex;
@@ -34,11 +35,16 @@ public class Person {
 	/**
 	 * Must not be instantiated from outside the class.
 	 */
-	private Person(FamilyName familyName, FirstName firstName, Sex sex, Birthday birthday) {
+	private Person(Identity id, FamilyName familyName, FirstName firstName, Sex sex, Birthday birthday) {
+		this.id = id;
 		this.familyName = familyName;
 		this.firstName = firstName;
 		this.sex = sex;
 		this.birthday = birthday;
+	}
+
+	public Identity id() {
+		return id;
 	}
 
 	/**
@@ -95,6 +101,9 @@ public class Person {
 	}
 
 	public Person marries(Person partner) {
+		if (isSamePerson(partner)) {
+			throw new NotAllowedToMarryMyselfException("You are not allowed to marry yourself");
+		}
 		this.marriedWith = partner;
 		partner.marriedWith = this;
 		return partner;
@@ -111,8 +120,35 @@ public class Person {
 		return ChronoUnit.YEARS.between(birthday().value(), date);
 	}
 
+	public boolean isSamePerson(Person other) {
+		return (this.equals(other) || this.id.equals(other.id));
+	}
+
+	/**
+	 * Creates a new person object and generates an id for it.
+	 * 
+	 * @param familyName
+	 * @param firstName
+	 * @param sex
+	 * @param birthday
+	 * @return
+	 */
 	public final static Person of(FamilyName familyName, FirstName firstName, Sex sex, Birthday birthday) {
-		return new Person(familyName, firstName, sex, birthday);
+		return new Person(Identity.of(), familyName, firstName, sex, birthday);
+	}
+
+	/**
+	 * Creates a new person object with the given id.
+	 * 
+	 * @param id
+	 * @param familyName
+	 * @param firstName
+	 * @param sex
+	 * @param birthday
+	 * @return
+	 */
+	public final static Person of(Identity id, FamilyName familyName, FirstName firstName, Sex sex, Birthday birthday) {
+		return new Person(id, familyName, firstName, sex, birthday);
 	}
 
 }

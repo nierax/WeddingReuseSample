@@ -2,6 +2,7 @@ package de.lexasoft.wedding;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
@@ -72,6 +73,12 @@ class PersonTest {
 		assertEquals(partner, cut.marriedWith());
 		assertTrue(partner.isMarried());
 		assertEquals(cut, partner.marriedWith());
+	}
+
+	@Test
+	final void not_allowed_to_marry_myself() {
+		assertThrows(NotAllowedToMarryMyselfException.class, //
+		    () -> cut.marries(cut));
 	}
 
 }
