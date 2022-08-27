@@ -68,10 +68,22 @@ public class Person {
 		return birthday;
 	}
 
+	/**
+	 * Returns the age of the person in years today with respect to the birthday.
+	 * 
+	 * @return The age in years.
+	 */
 	public long ageInYearsToday() {
 		return ageInYearsAtDate(LocalDate.now());
 	}
 
+	/**
+	 * Returns the age of the person in years to a given date with respect to the
+	 * birthday.
+	 * 
+	 * @param date The date to compare with
+	 * @return The age in years
+	 */
 	public long ageInYearsAtDate(LocalDate date) {
 		return ChronoUnit.YEARS.between(birthday().value(), date);
 	}

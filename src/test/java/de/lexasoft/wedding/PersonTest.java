@@ -25,14 +25,20 @@ class PersonTest {
 
 	private final static Stream<Arguments> testAgeInYearsAtDate() {
 		return Stream.of(//
-		    Arguments.of(LocalDate.of(2008, 11, 27), 18), //
-		    Arguments.of(LocalDate.of(2008, 11, 26), 17), //
-		    Arguments.of(LocalDate.of(2008, 11, 28), 18), //
-		    Arguments.of(LocalDate.of(2018, 11, 28), 28), //
-		    Arguments.of(LocalDate.of(1990, 11, 28), 0), //
-		    Arguments.of(LocalDate.of(1991, 11, 26), 0));
+		    Arguments.of(LocalDate.of(2008, 11, 27), 18), // 18th birthday
+		    Arguments.of(LocalDate.of(2008, 11, 26), 17), // day before 18th birthday
+		    Arguments.of(LocalDate.of(2008, 11, 28), 18), // day after 18th birthday
+		    Arguments.of(LocalDate.of(2018, 11, 28), 28), // 28th birthday
+		    Arguments.of(LocalDate.of(1990, 11, 28), 0), // day of birth
+		    Arguments.of(LocalDate.of(1991, 11, 26), 0)); // day before first birthday
 	}
 
+	/**
+	 * Check the age calculation
+	 * 
+	 * @param otherDate   Date to compare with.
+	 * @param expectedAge Expected age
+	 */
 	@ParameterizedTest
 	@MethodSource
 	final void testAgeInYearsAtDate(LocalDate otherDate, long expectedAge) {
