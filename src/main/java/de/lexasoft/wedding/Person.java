@@ -29,6 +29,7 @@ public class Person {
 	private FirstName firstName;
 	private Sex sex;
 	private Birthday birthday;
+	private Person marriedWith;
 
 	/**
 	 * Must not be instantiated from outside the class.
@@ -75,6 +76,26 @@ public class Person {
 	 */
 	public long ageInYearsToday() {
 		return ageInYearsAtDate(LocalDate.now());
+	}
+
+	/**
+	 * 
+	 * @return The person, this person is married with, null otherwise.
+	 */
+	public Person marriedWith() {
+		return marriedWith;
+	}
+
+	/**
+	 * 
+	 * @return True, if married. False otherwise.
+	 */
+	public boolean isMarried() {
+		return marriedWith != null;
+	}
+
+	public Person marries(Person partner) {
+		return null;
 	}
 
 	/**

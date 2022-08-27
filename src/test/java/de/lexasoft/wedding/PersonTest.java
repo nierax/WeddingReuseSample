@@ -1,11 +1,14 @@
 package de.lexasoft.wedding;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -43,6 +46,32 @@ class PersonTest {
 	@MethodSource
 	final void testAgeInYearsAtDate(LocalDate otherDate, long expectedAge) {
 		assertEquals(expectedAge, cut.ageInYearsAtDate(otherDate));
+	}
+
+	@Test
+	final void isMarried_intial_False() {
+		assertFalse(cut.isMarried());
+	}
+
+	/**
+	 * Marriage to another person.
+	 */
+	@Test
+	final void marries_otherPerson() {
+		Person partner = Person.of(//
+		    FamilyName.of("Miller"), //
+		    FirstName.of("Maria"), //
+		    Sex.of(SexEnum.FEMALE), //
+		    Birthday.of(1999, 12, 22));
+
+		// Now they marry each other
+		cut.marries(partner);
+
+		// Are they married correctly?
+		assertTrue(cut.isMarried());
+		assertEquals(partner, cut.marriedWith());
+		assertTrue(partner.isMarried());
+		assertEquals(partner, partner.marriedWith());
 	}
 
 }
