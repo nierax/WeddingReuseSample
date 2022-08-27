@@ -14,7 +14,7 @@
  */
 package de.lexasoft.wedding;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 /**
  * Value object representing the birthday of a person.
@@ -22,14 +22,18 @@ import java.util.Date;
  * @author nierax
  *
  */
-public class Birthday extends ValueObject<Date> {
+public class Birthday extends ValueObject<LocalDate> {
 
-	private Birthday(Date value) {
+	private Birthday(LocalDate value) {
 		super(value);
 	}
 
-	public final static Birthday of(Date value) {
+	public final static Birthday of(LocalDate value) {
 		return new Birthday(value);
+	}
+
+	public final static Birthday of(int year, int month, int dayOfMonth) {
+		return of(LocalDate.of(year, month, dayOfMonth));
 	}
 
 }

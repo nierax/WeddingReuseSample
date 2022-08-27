@@ -14,6 +14,9 @@
  */
 package de.lexasoft.wedding;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+
 /**
  * Represents a natural person in our system.
  * 
@@ -63,6 +66,14 @@ public class Person {
 	 */
 	public Birthday birthday() {
 		return birthday;
+	}
+
+	public long ageInYearsToday() {
+		return ageInYearsAtDate(LocalDate.now());
+	}
+
+	public long ageInYearsAtDate(LocalDate date) {
+		return ChronoUnit.YEARS.between(birthday().value(), date);
 	}
 
 	public final static Person of(FamilyName familyName, FirstName firstName, Sex sex, Birthday birthday) {
