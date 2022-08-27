@@ -64,14 +64,14 @@ class PersonTest {
 		    Sex.of(SexEnum.FEMALE), //
 		    Birthday.of(1999, 12, 22));
 
-		// Now they marry each other
-		cut.marries(partner);
+		// Now they marry each other. Should return the partner.
+		assertEquals(partner, cut.marries(partner));
 
 		// Are they married correctly?
 		assertTrue(cut.isMarried());
 		assertEquals(partner, cut.marriedWith());
 		assertTrue(partner.isMarried());
-		assertEquals(partner, partner.marriedWith());
+		assertEquals(cut, partner.marriedWith());
 	}
 
 }

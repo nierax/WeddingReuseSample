@@ -95,7 +95,9 @@ public class Person {
 	}
 
 	public Person marries(Person partner) {
-		return null;
+		this.marriedWith = partner;
+		partner.marriedWith = this;
+		return partner;
 	}
 
 	/**
