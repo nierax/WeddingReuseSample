@@ -20,6 +20,7 @@ package de.lexasoft.wedding;
  * @author nierax
  *
  */
+@SuppressWarnings("serial")
 public class Sex extends ValueObject<SexEnum> {
 
 	private Sex(SexEnum value) {

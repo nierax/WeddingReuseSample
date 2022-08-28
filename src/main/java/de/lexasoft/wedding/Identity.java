@@ -22,6 +22,7 @@ import java.util.UUID;
  * @author nierax
  *
  */
+@SuppressWarnings("serial")
 public class Identity extends ValueObject<UUID> {
 
 	/**

@@ -25,7 +25,7 @@ import java.time.temporal.ChronoUnit;
  */
 public class Person {
 
-	private Identity id;
+	private final Identity id;
 	private FamilyName familyName;
 	private FirstName firstName;
 	private Sex sex;

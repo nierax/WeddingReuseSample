@@ -14,13 +14,18 @@
  */
 package de.lexasoft.wedding;
 
+import java.io.Serializable;
+
 /**
- * Base class for any value object
+ * Base class for any value object.
+ * <p>
+ * Value objects are immutable by design.
  * 
  * @author nierax
  *
  */
-public abstract class ValueObject<T> {
+@SuppressWarnings("serial")
+public abstract class ValueObject<T> implements Serializable {
 
 	private final T value;
 

@@ -20,6 +20,7 @@ package de.lexasoft.wedding;
  * @author nierax
  *
  */
+@SuppressWarnings("serial")
 public class FirstName extends ValueObject<String> {
 
 	private FirstName(String value) {

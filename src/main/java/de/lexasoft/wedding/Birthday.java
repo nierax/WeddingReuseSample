@@ -22,6 +22,7 @@ import java.time.LocalDate;
  * @author nierax
  *
  */
+@SuppressWarnings("serial")
 public class Birthday extends ValueObject<LocalDate> {
 
 	private Birthday(LocalDate value) {

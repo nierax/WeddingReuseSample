@@ -28,6 +28,7 @@ import org.junit.jupiter.params.provider.ValueSource;
  */
 class ValueObjectTest {
 
+	@SuppressWarnings("serial")
 	class CUT extends ValueObject<String> {
 
 		protected CUT(String value) {
