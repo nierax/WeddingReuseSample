@@ -2,7 +2,7 @@ package de.lexasoft.wedding;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
@@ -66,9 +66,10 @@ class PersonTest {
 		    Birthday.of(1999, 12, 22));
 
 		// Now they marry each other. Should return the partner.
-		assertEquals(partner, cut.marries(partner));
+		Result<Person> result = cut.marries(partner);
 
 		// Are they married correctly?
+		assertEquals(partner, result.value());
 		assertTrue(cut.isMarried());
 		assertEquals(partner, cut.marriedWith());
 		assertTrue(partner.isMarried());
@@ -77,8 +78,13 @@ class PersonTest {
 
 	@Test
 	final void not_allowed_to_marry_myself() {
-		assertThrows(NotAllowedToMarryMyselfException.class, //
-		    () -> cut.marries(cut));
+		// Try to marry myself.
+		Result<Person> result = cut.marries(cut);
+		assertEquals(MessageSeverity.ERROR, result.resultSeverity());
+		assertTrue(result.messages().get(0) instanceof NotAllowedToMarryMyselfError);
+		assertEquals(cut, result.value());
+		assertFalse(result.value().isMarried());
+		assertNull(result.value().marriedWith());
 	}
 
 }

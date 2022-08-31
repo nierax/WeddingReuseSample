@@ -15,19 +15,16 @@
 package de.lexasoft.wedding;
 
 /**
- * Thrown, when a person tries to marry himself.
- * 
  * @author nierax
  *
  */
-@SuppressWarnings("serial")
-public class NotAllowedToMarryMyselfException extends RuntimeException {
+public class NotAllowedToMarryMyselfError extends Message {
 
 	/**
 	 * 
 	 */
-	public NotAllowedToMarryMyselfException(String message) {
-		super(message);
+	public NotAllowedToMarryMyselfError() {
+		super(MessageText.of("You are not allowed to marry yourself"), MessageSeverity.ERROR);
 	}
 
 }

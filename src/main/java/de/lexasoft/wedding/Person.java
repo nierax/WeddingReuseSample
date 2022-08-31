@@ -16,6 +16,8 @@ package de.lexasoft.wedding;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents a natural person in our system.
@@ -100,13 +102,21 @@ public class Person {
 		return marriedWith != null;
 	}
 
-	public Person marries(Person partner) {
+	/**
+	 * Marriage between two person.
+	 * 
+	 * @param partner
+	 * @return
+	 */
+	public Result<Person> marries(Person partner) {
+		List<Message> messages = new ArrayList<>();
 		if (isSamePerson(partner)) {
-			throw new NotAllowedToMarryMyselfException("You are not allowed to marry yourself");
+			messages.add(new NotAllowedToMarryMyselfError());
+		} else {
+			this.marriedWith = partner;
+			partner.marriedWith = this;
 		}
-		this.marriedWith = partner;
-		partner.marriedWith = this;
-		return partner;
+		return Result.of(partner, messages);
 	}
 
 	/**
