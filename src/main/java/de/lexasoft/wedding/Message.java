@@ -16,6 +16,9 @@ package de.lexasoft.wedding;
 
 /**
  * Represents a message from a method.
+ * <p>
+ * Is abstract because there should be defined a specific message for every
+ * situation.
  * 
  * @author nierax
  *
@@ -26,7 +29,7 @@ public abstract class Message {
 	private final MessageSeverity severity;
 
 	/**
-	 * Must not be instantiated from outside the class.
+	 * Must not be instantiated from outside the extension hierarchy.
 	 */
 	protected Message(MessageText text, MessageSeverity severity) {
 		this.text = text;
