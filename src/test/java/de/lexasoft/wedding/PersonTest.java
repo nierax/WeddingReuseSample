@@ -69,11 +69,11 @@ class PersonTest {
 		Result<Person> result = cut.marries(partner);
 
 		// Are they married correctly?
-		assertEquals(partner, result.value());
+		assertEquals(cut, result.value());
 		assertTrue(cut.isMarried());
-		assertEquals(partner, cut.marriedWith());
+		assertEquals(partner.id(), cut.marriedWithID());
 		assertTrue(partner.isMarried());
-		assertEquals(cut, partner.marriedWith());
+		assertEquals(cut.id(), partner.marriedWithID());
 	}
 
 	@Test
@@ -84,7 +84,7 @@ class PersonTest {
 		assertTrue(result.messages().get(0) instanceof NotAllowedToMarryMyselfError);
 		assertEquals(cut, result.value());
 		assertFalse(result.value().isMarried());
-		assertNull(result.value().marriedWith());
+		assertNull(result.value().marriedWithID());
 	}
 
 }

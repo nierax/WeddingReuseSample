@@ -32,7 +32,18 @@ public class Person {
 	private FirstName firstName;
 	private Sex sex;
 	private Birthday birthday;
-	private Person marriedWith;
+	private Identity marriedWithID;
+
+	@SuppressWarnings("serial")
+	class IdMustNotBeNullException extends RuntimeException {
+
+		/**
+		 * 
+		 */
+		private IdMustNotBeNullException() {
+			super("The Id must not be null.");
+		}
+	}
 
 	/**
 	 * Must not be instantiated from outside the class.
@@ -90,8 +101,15 @@ public class Person {
 	 * 
 	 * @return The person, this person is married with, null otherwise.
 	 */
-	public Person marriedWith() {
-		return marriedWith;
+	public Identity marriedWithID() {
+		return marriedWithID;
+	}
+
+	private Identity marriedWithID(Identity marriedWithID) {
+		if (marriedWithID == null) {
+			throw new IdMustNotBeNullException();
+		}
+		return this.marriedWithID = marriedWithID;
 	}
 
 	/**
@@ -99,24 +117,24 @@ public class Person {
 	 * @return True, if married. False otherwise.
 	 */
 	public boolean isMarried() {
-		return marriedWith != null;
+		return this.marriedWithID != null;
 	}
 
 	/**
 	 * Marriage between two person.
 	 * 
 	 * @param partner
-	 * @return
+	 * @return Result with this person.
 	 */
 	public Result<Person> marries(Person partner) {
 		List<Message> messages = new ArrayList<>();
 		if (isSamePerson(partner)) {
 			messages.add(new NotAllowedToMarryMyselfError());
 		} else {
-			this.marriedWith = partner;
-			partner.marriedWith = this;
+			this.marriedWithID(partner.id());
+			partner.marriedWithID(this.id());
 		}
-		return Result.of(partner, messages);
+		return Result.of(this, messages);
 	}
 
 	/**
