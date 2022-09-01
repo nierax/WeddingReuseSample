@@ -12,19 +12,42 @@
  * You should have received a copy of the GNU General Public License along with this program; 
  * if not, see <http://www.gnu.org/licenses/>. 
  */
-package de.lexasoft.wedding;
+package de.lexasoft.wedding.message;
 
 /**
+ * Represents a message from a method.
+ * <p>
+ * Is abstract because there should be defined a specific message for every
+ * situation.
+ * 
  * @author nierax
  *
  */
-public class NotAllowedToMarryMyselfError extends Message {
+public abstract class Message {
+
+	private final MessageText text;
+	private final MessageSeverity severity;
 
 	/**
-	 * 
+	 * Must not be instantiated from outside the extension hierarchy.
 	 */
-	public NotAllowedToMarryMyselfError() {
-		super(MessageText.of("You are not allowed to marry yourself"), MessageSeverity.ERROR);
+	protected Message(MessageText text, MessageSeverity severity) {
+		this.text = text;
+		this.severity = severity;
+	}
+
+	/**
+	 * @return the text
+	 */
+	public MessageText text() {
+		return text;
+	}
+
+	/**
+	 * @return the severity
+	 */
+	public MessageSeverity severity() {
+		return severity;
 	}
 
 }

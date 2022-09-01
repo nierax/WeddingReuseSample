@@ -23,6 +23,10 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import de.lexasoft.wedding.message.Message;
+import de.lexasoft.wedding.message.MessageSeverity;
+import de.lexasoft.wedding.message.MessageText;
+
 /**
  * @author nierax
  *

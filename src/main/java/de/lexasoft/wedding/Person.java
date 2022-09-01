@@ -19,6 +19,9 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.lexasoft.wedding.message.Message;
+import de.lexasoft.wedding.message.NotAllowedToMarryMyselfError;
+
 /**
  * Represents a natural person in our system.
  * 
@@ -120,6 +123,14 @@ public class Person {
 		return this.marriedWithID != null;
 	}
 
+	private Result<Person> validatePersonsForMarriage(Person me, Person other) {
+		List<Message> messages = new ArrayList<>();
+		if (isSamePerson(other)) {
+			messages.add(new NotAllowedToMarryMyselfError());
+		}
+		return Result.of(this, messages);
+	}
+
 	/**
 	 * Marriage between two person.
 	 * 
@@ -127,14 +138,12 @@ public class Person {
 	 * @return Result with this person.
 	 */
 	public Result<Person> marries(Person partner) {
-		List<Message> messages = new ArrayList<>();
-		if (isSamePerson(partner)) {
-			messages.add(new NotAllowedToMarryMyselfError());
-		} else {
+		Result<Person> result = validatePersonsForMarriage(this, partner);
+		if (!result.isErroneous()) {
 			this.marriedWithID(partner.id());
 			partner.marriedWithID(this.id());
 		}
-		return Result.of(this, messages);
+		return result;
 	}
 
 	/**

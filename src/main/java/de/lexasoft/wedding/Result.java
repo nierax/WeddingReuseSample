@@ -17,6 +17,9 @@ package de.lexasoft.wedding;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.lexasoft.wedding.message.Message;
+import de.lexasoft.wedding.message.MessageSeverity;
+
 /**
  * @author nierax
  *
@@ -76,6 +79,10 @@ public class Result<T> extends ValueObject<T> {
 			}
 		}
 		return severity;
+	}
+
+	public boolean isErroneous() {
+		return resultSeverity() == MessageSeverity.ERROR;
 	}
 
 	/**

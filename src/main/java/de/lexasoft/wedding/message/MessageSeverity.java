@@ -12,24 +12,29 @@
  * You should have received a copy of the GNU General Public License along with this program; 
  * if not, see <http://www.gnu.org/licenses/>. 
  */
-package de.lexasoft.wedding;
+package de.lexasoft.wedding.message;
 
 /**
+ * Severity of a message.
+ * 
  * @author nierax
  *
  */
-@SuppressWarnings("serial")
-public class MessageText extends ValueObject<String> {
+public enum MessageSeverity {
 
-	/**
-	 * @param value
-	 */
-	private MessageText(String value) {
-		super(value);
+	NONE(0), HINT(10), WARNING(50), ERROR(100);
+
+	private final int level;
+
+	private MessageSeverity(int level) {
+		this.level = level;
 	}
 
-	public final static MessageText of(String text) {
-		return new MessageText(text);
+	public int level() {
+		return level;
 	}
 
+	public boolean isHigher(MessageSeverity other) {
+		return this.level > other.level;
+	}
 }

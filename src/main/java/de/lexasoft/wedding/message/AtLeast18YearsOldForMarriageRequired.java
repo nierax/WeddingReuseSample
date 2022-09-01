@@ -12,29 +12,24 @@
  * You should have received a copy of the GNU General Public License along with this program; 
  * if not, see <http://www.gnu.org/licenses/>. 
  */
-package de.lexasoft.wedding;
+package de.lexasoft.wedding.message;
+
+import de.lexasoft.wedding.Person;
 
 /**
- * Severity of a message.
- * 
  * @author nierax
  *
  */
-public enum MessageSeverity {
+public class AtLeast18YearsOldForMarriageRequired extends Message {
 
-	NONE(0), HINT(10), WARNING(50), ERROR(100);
-
-	private final int level;
-
-	private MessageSeverity(int level) {
-		this.level = level;
+	/**
+	 * 
+	 */
+	public AtLeast18YearsOldForMarriageRequired(Person person) {
+		super(
+		    MessageText
+		        .of(String.format("Person %s must be at least 18 years old, but is %", person, person.ageInYearsToday())),
+		    MessageSeverity.ERROR);
 	}
 
-	public int level() {
-		return level;
-	}
-
-	public boolean isHigher(MessageSeverity other) {
-		return this.level > other.level;
-	}
 }
