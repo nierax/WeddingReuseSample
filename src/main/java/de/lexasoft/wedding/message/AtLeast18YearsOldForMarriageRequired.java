@@ -26,10 +26,8 @@ public class AtLeast18YearsOldForMarriageRequired extends Message {
 	 * 
 	 */
 	public AtLeast18YearsOldForMarriageRequired(Person person) {
-		super(
-		    MessageText
-		        .of(String.format("Person %s must be at least 18 years old, but is %", person, person.ageInYearsToday())),
-		    MessageSeverity.ERROR);
+		super(MessageText.of(String.format("Person %s must be at least 18 years old, but is %s years old.", person,
+		    person.ageInYearsToday())), MessageSeverity.ERROR);
 	}
 
 }

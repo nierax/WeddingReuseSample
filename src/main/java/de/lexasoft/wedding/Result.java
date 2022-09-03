@@ -67,6 +67,15 @@ public class Result<T> extends ValueObject<T> {
 	}
 
 	/**
+	 * Get the number of messages in the result.
+	 * 
+	 * @return
+	 */
+	public int nrOfMessages() {
+		return messages.size();
+	}
+
+	/**
 	 * Returns the strongest severity in the list or NONE, if there is not message.
 	 * 
 	 * @return
@@ -81,6 +90,10 @@ public class Result<T> extends ValueObject<T> {
 		return severity;
 	}
 
+	/**
+	 * 
+	 * @return True, if result severity is ERROR, false otherwise.
+	 */
 	public boolean isErroneous() {
 		return resultSeverity() == MessageSeverity.ERROR;
 	}

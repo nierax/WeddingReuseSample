@@ -3,6 +3,7 @@ package de.lexasoft.wedding;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
@@ -14,6 +15,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import de.lexasoft.wedding.message.AtLeast18YearsOldForMarriageRequired;
+import de.lexasoft.wedding.message.Message;
 import de.lexasoft.wedding.message.MessageSeverity;
 import de.lexasoft.wedding.message.NotAllowedToMarryMyselfError;
 
@@ -28,6 +31,10 @@ class PersonTest {
 	@BeforeEach
 	void setUp() throws Exception {
 
+	}
+
+	private static Birthday birthdayForAge(long age) {
+		return Birthday.of(LocalDate.now().minusYears(age));
 	}
 
 	private final static Stream<Arguments> testAgeInYearsAtDate() {
@@ -88,6 +95,48 @@ class PersonTest {
 		assertEquals(cut, result.value());
 		assertFalse(result.value().isMarried());
 		assertNull(result.value().marriedWithID());
+	}
+
+	static Stream<Arguments> both_persons_must_be_at_least_18_years_old() {
+		return Stream.of(//
+		    // both > 18
+		    Arguments.of(//
+		        Person.of(FamilyName.of("fam1"), FirstName.of("first1"), Sex.of(SexEnum.MALE), birthdayForAge(20)),
+		        Person.of(FamilyName.of("fam2"), FirstName.of("first2"), Sex.of(SexEnum.FEMALE), birthdayForAge(18)), //
+		        0, //
+		        MessageSeverity.NONE), //
+		    // first person < 18
+		    Arguments.of(//
+		        Person.of(FamilyName.of("fam1"), FirstName.of("first1"), Sex.of(SexEnum.MALE), birthdayForAge(8)),
+		        Person.of(FamilyName.of("fam2"), FirstName.of("first2"), Sex.of(SexEnum.FEMALE), birthdayForAge(18)), //
+		        1, //
+		        MessageSeverity.ERROR),
+		    // both persons < 18
+		    Arguments.of(//
+		        Person.of(FamilyName.of("fam1"), FirstName.of("first1"), Sex.of(SexEnum.MALE), birthdayForAge(8)),
+		        Person.of(FamilyName.of("fam2"), FirstName.of("first2"), Sex.of(SexEnum.FEMALE), birthdayForAge(17)), //
+		        2, //
+		        MessageSeverity.ERROR),
+		    // second person > 18
+		    Arguments.of(//
+		        Person.of(FamilyName.of("fam1"), FirstName.of("first1"), Sex.of(SexEnum.MALE), birthdayForAge(18)),
+		        Person.of(FamilyName.of("fam2"), FirstName.of("first2"), Sex.of(SexEnum.FEMALE), birthdayForAge(17)), //
+		        1, //
+		        MessageSeverity.ERROR));
+	}
+
+	@ParameterizedTest
+	@MethodSource
+	final void both_persons_must_be_at_least_18_years_old(Person person1, Person person2, int nrOfMessages,
+	    MessageSeverity severity) {
+		Result<Person> result = person1.marries(person2);
+		assertEquals(nrOfMessages, result.nrOfMessages());
+		if (nrOfMessages > 0) {
+			for (Message message : result.messages()) {
+				assertTrue(message instanceof AtLeast18YearsOldForMarriageRequired);
+			}
+		}
+		assertSame(severity, result.resultSeverity());
 	}
 
 }

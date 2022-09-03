@@ -19,7 +19,9 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.lexasoft.wedding.message.AtLeast18YearsOldForMarriageRequired;
 import de.lexasoft.wedding.message.Message;
+import de.lexasoft.wedding.message.MessageSeverity;
 import de.lexasoft.wedding.message.NotAllowedToMarryMyselfError;
 
 /**
@@ -36,6 +38,8 @@ public class Person {
 	private Sex sex;
 	private Birthday birthday;
 	private Identity marriedWithID;
+
+	private static final long MIN_AGE_TO_MARRY = 18;
 
 	@SuppressWarnings("serial")
 	class IdMustNotBeNullException extends RuntimeException {
@@ -123,16 +127,40 @@ public class Person {
 		return this.marriedWithID != null;
 	}
 
+	private List<Message> validateAgeToday(Person person) {
+		List<Message> messages = new ArrayList<>();
+		if (person.ageInYearsToday() < MIN_AGE_TO_MARRY) {
+			messages.add(new AtLeast18YearsOldForMarriageRequired(person));
+		}
+		return messages;
+	}
+
+	/**
+	 * Checks, whether two persons are allowed to marry
+	 * 
+	 * @param me    First person to check
+	 * @param other Second person to check
+	 * @return Result with Person me and the messages according to the validations,
+	 *         if any.
+	 */
 	private Result<Person> validatePersonsForMarriage(Person me, Person other) {
 		List<Message> messages = new ArrayList<>();
 		if (isSamePerson(other)) {
 			messages.add(new NotAllowedToMarryMyselfError());
 		}
+		messages.addAll(validateAgeToday(me));
+		messages.addAll(validateAgeToday(other));
 		return Result.of(this, messages);
 	}
 
 	/**
 	 * Marriage between two person.
+	 * <p>
+	 * In case marriage is not possible, the marriage will not be done and the
+	 * reasons will be delivered inside the message list. In this case the result
+	 * severity is {@link MessageSeverity#ERROR}.
+	 * 
+	 * If everything was ok, the {@link MessageSeverity#NONE} is used.
 	 * 
 	 * @param partner
 	 * @return Result with this person.
