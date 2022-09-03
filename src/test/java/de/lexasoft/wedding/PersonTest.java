@@ -18,6 +18,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import de.lexasoft.wedding.message.AtLeast18YearsOldForMarriageRequired;
 import de.lexasoft.wedding.message.Message;
 import de.lexasoft.wedding.message.MessageSeverity;
+import de.lexasoft.wedding.message.MinimumAgeInUSAWarning;
 import de.lexasoft.wedding.message.NotAllowedToMarryMyselfError;
 
 class PersonTest {
@@ -134,6 +135,60 @@ class PersonTest {
 		if (nrOfMessages > 0) {
 			for (Message message : result.messages()) {
 				assertTrue(message instanceof AtLeast18YearsOldForMarriageRequired);
+			}
+		}
+		assertSame(severity, result.resultSeverity());
+	}
+
+	static Stream<Arguments> minimal_age_in_nebraska_19_and_21_in_mississippi() {
+		return Stream.of(//
+		    // first ok, second 19
+		    Arguments.of(//
+		        Person.of(FamilyName.of("fam1"), FirstName.of("first1"), Sex.of(SexEnum.MALE), birthdayForAge(21),
+		            Country.UNITED_STATES),
+		        Person.of(FamilyName.of("fam2"), FirstName.of("first2"), Sex.of(SexEnum.FEMALE), birthdayForAge(19),
+		            Country.UNITED_STATES), //
+		        1, //
+		        MessageSeverity.WARNING, //
+		        MinimumAgeInUSAWarning.class), //
+		    // both persons > 21
+		    Arguments.of(//
+		        Person.of(FamilyName.of("fam1"), FirstName.of("first1"), Sex.of(SexEnum.MALE), birthdayForAge(22),
+		            Country.UNITED_STATES),
+		        Person.of(FamilyName.of("fam2"), FirstName.of("first2"), Sex.of(SexEnum.FEMALE), birthdayForAge(21),
+		            Country.UNITED_STATES), //
+		        0, //
+		        MessageSeverity.NONE, //
+		        null), //
+		    // both persons < 18 => Dominates, the USA validation should not be executed.
+		    Arguments.of(//
+		        Person.of(FamilyName.of("fam1"), FirstName.of("first1"), Sex.of(SexEnum.MALE), birthdayForAge(8),
+		            Country.UNITED_STATES),
+		        Person.of(FamilyName.of("fam2"), FirstName.of("first2"), Sex.of(SexEnum.FEMALE), birthdayForAge(17),
+		            Country.UNITED_STATES), //
+		        2, //
+		        MessageSeverity.ERROR, //
+		        AtLeast18YearsOldForMarriageRequired.class),
+		    // both persons < 21
+		    Arguments.of(//
+		        Person.of(FamilyName.of("fam1"), FirstName.of("first1"), Sex.of(SexEnum.MALE), birthdayForAge(18),
+		            Country.UNITED_STATES),
+		        Person.of(FamilyName.of("fam2"), FirstName.of("first2"), Sex.of(SexEnum.FEMALE), birthdayForAge(20),
+		            Country.UNITED_STATES), //
+		        2, //
+		        MessageSeverity.WARNING, //
+		        MinimumAgeInUSAWarning.class));
+	}
+
+	@ParameterizedTest
+	@MethodSource
+	final void minimal_age_in_nebraska_19_and_21_in_mississippi(Person person1, Person person2, int nrOfMessages,
+	    MessageSeverity severity, Class<?> msgClass) {
+		Result<Person> result = person1.marries(person2);
+		assertEquals(nrOfMessages, result.nrOfMessages());
+		if (nrOfMessages > 0) {
+			for (Message message : result.messages()) {
+				assertEquals(msgClass, message.getClass());
 			}
 		}
 		assertSame(severity, result.resultSeverity());

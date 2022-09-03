@@ -22,6 +22,7 @@ import java.util.List;
 import de.lexasoft.wedding.message.AtLeast18YearsOldForMarriageRequired;
 import de.lexasoft.wedding.message.Message;
 import de.lexasoft.wedding.message.MessageSeverity;
+import de.lexasoft.wedding.message.MinimumAgeInUSAWarning;
 import de.lexasoft.wedding.message.NotAllowedToMarryMyselfError;
 
 /**
@@ -38,8 +39,10 @@ public class Person {
 	private Sex sex;
 	private Birthday birthday;
 	private Identity marriedWithID;
+	private Country country;
 
 	private static final long MIN_AGE_TO_MARRY = 18;
+	private static final long MIN_AGE_TO_MARRY_MISSISSIPPI = 21;
 
 	@SuppressWarnings("serial")
 	class IdMustNotBeNullException extends RuntimeException {
@@ -55,12 +58,13 @@ public class Person {
 	/**
 	 * Must not be instantiated from outside the class.
 	 */
-	private Person(Identity id, FamilyName familyName, FirstName firstName, Sex sex, Birthday birthday) {
+	private Person(Identity id, FamilyName familyName, FirstName firstName, Sex sex, Birthday birthday, Country country) {
 		this.id = id;
 		this.familyName = familyName;
 		this.firstName = firstName;
 		this.sex = sex;
 		this.birthday = birthday;
+		this.country = country;
 	}
 
 	public Identity id() {
@@ -95,6 +99,10 @@ public class Person {
 		return birthday;
 	}
 
+	public Country country() {
+		return this.country;
+	}
+
 	/**
 	 * Returns the age of the person in years today with respect to the birthday.
 	 * 
@@ -127,10 +135,33 @@ public class Person {
 		return this.marriedWithID != null;
 	}
 
+	/**
+	 * Validates, whether the given person is at least 18 Years old.
+	 * <p>
+	 * If so and if the person lives in USA, the age for Nebraska and Mississippi is
+	 * checked as well.
+	 * <p>
+	 * In that case an additional warning appears.
+	 * 
+	 * @param person
+	 * @return
+	 */
 	private List<Message> validateAgeToday(Person person) {
 		List<Message> messages = new ArrayList<>();
 		if (person.ageInYearsToday() < MIN_AGE_TO_MARRY) {
 			messages.add(new AtLeast18YearsOldForMarriageRequired(person));
+		} else {
+			messages.addAll(validateAgeTodayInUSA(person));
+		}
+		return messages;
+	}
+
+	private List<Message> validateAgeTodayInUSA(Person person) {
+		List<Message> messages = new ArrayList<>();
+		if (person.country() == Country.UNITED_STATES) {
+			if (person.ageInYearsToday() < MIN_AGE_TO_MARRY_MISSISSIPPI) {
+				messages.add(new MinimumAgeInUSAWarning(person));
+			}
 		}
 		return messages;
 	}
@@ -199,7 +230,21 @@ public class Person {
 	 * @return
 	 */
 	public final static Person of(FamilyName familyName, FirstName firstName, Sex sex, Birthday birthday) {
-		return new Person(Identity.of(), familyName, firstName, sex, birthday);
+		return Person.of(Identity.of(), familyName, firstName, sex, birthday, Country.GERMANY);
+	}
+
+	/**
+	 * Creates a new person object and generates an id for it.
+	 * 
+	 * @param familyName
+	 * @param firstName
+	 * @param sex
+	 * @param birthday
+	 * @return
+	 */
+	public final static Person of(FamilyName familyName, FirstName firstName, Sex sex, Birthday birthday,
+	    Country country) {
+		return Person.of(Identity.of(), familyName, firstName, sex, birthday, country);
 	}
 
 	/**
@@ -212,8 +257,9 @@ public class Person {
 	 * @param birthday
 	 * @return
 	 */
-	public final static Person of(Identity id, FamilyName familyName, FirstName firstName, Sex sex, Birthday birthday) {
-		return new Person(id, familyName, firstName, sex, birthday);
+	public final static Person of(Identity id, FamilyName familyName, FirstName firstName, Sex sex, Birthday birthday,
+	    Country country) {
+		return new Person(id, familyName, firstName, sex, birthday, country);
 	}
 
 }
