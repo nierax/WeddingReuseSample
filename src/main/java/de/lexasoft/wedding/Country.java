@@ -17,14 +17,16 @@ package de.lexasoft.wedding;
 import java.util.Locale;
 
 /**
- * Defines countries in which the application is running
+ * Defines countries in which the application is running.
+ * 
+ * @see https://kodejava.org/how-do-i-get-a-list-of-country-names/
  * 
  * @author nierax
  *
  */
 public enum Country {
 
-	UNITED_STATES("USA"), GERMANY("DEU");
+	UNITED_STATES("USA"), GERMANY("DEU"), POLAND("POL");
 
 	private final Locale country;
 

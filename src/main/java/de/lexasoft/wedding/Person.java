@@ -58,7 +58,8 @@ public class Person {
 	/**
 	 * Must not be instantiated from outside the class.
 	 */
-	private Person(Identity id, FamilyName familyName, FirstName firstName, Sex sex, Birthday birthday, Country country) {
+	protected Person(Identity id, FamilyName familyName, FirstName firstName, Sex sex, Birthday birthday,
+	    Country country) {
 		this.id = id;
 		this.familyName = familyName;
 		this.firstName = firstName;
@@ -164,6 +165,10 @@ public class Person {
 			}
 		}
 		return messages;
+	}
+
+	protected List<Message> customMarriageValidation(Person me, Person other) {
+		return new ArrayList<>();
 	}
 
 	/**
