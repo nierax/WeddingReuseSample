@@ -12,32 +12,26 @@
  * You should have received a copy of the GNU General Public License along with this program; 
  * if not, see <http://www.gnu.org/licenses/>. 
  */
-package de.lexasoft.wedding;
+package de.lexasoft.wedding.poland;
+
+import de.lexasoft.wedding.message.Message;
+import de.lexasoft.wedding.message.MessageSeverity;
+import de.lexasoft.wedding.message.MessageText;
 
 /**
- * Value object representing the sex of a person.
+ * Message for restricted marriage of same sex persons in Poland.
  * 
  * @author nierax
  *
  */
-@SuppressWarnings("serial")
-public class Sex extends ValueObject<SexEnum> {
+public class NoWeddingWithSameSexAllwoed extends Message {
 
-	private Sex(SexEnum value) {
-		super(value);
-	}
-
-	public final static Sex of(SexEnum value) {
-		return new Sex(value);
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (!(obj instanceof Sex)) {
-			return false;
-		}
-		Sex other = (Sex) obj;
-		return (this.value().equals(other.value()) ? true : super.equals(obj));
+	/**
+	 * @param text
+	 * @param severity
+	 */
+	public NoWeddingWithSameSexAllwoed() {
+		super(MessageText.of("Not allowed to marry a person with same sex in Poland"), MessageSeverity.ERROR);
 	}
 
 }

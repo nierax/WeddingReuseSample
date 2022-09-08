@@ -14,6 +14,7 @@
  */
 package de.lexasoft.wedding.poland;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import de.lexasoft.wedding.Birthday;
@@ -44,14 +45,22 @@ public class PolishPerson extends Person {
 		super(id, familyName, firstName, sex, birthday, country);
 	}
 
-	public final static Person of(Identity id, FamilyName familyName, FirstName firstName, Sex sex, Birthday birthday) {
+	public final static PolishPerson of(Identity id, FamilyName familyName, FirstName firstName, Sex sex,
+	    Birthday birthday) {
 		return new PolishPerson(id, familyName, firstName, sex, birthday, Country.POLAND);
+	}
+
+	public final static PolishPerson of(FamilyName familyName, FirstName firstName, Sex sex, Birthday birthday) {
+		return new PolishPerson(Identity.of(), familyName, firstName, sex, birthday, Country.POLAND);
 	}
 
 	@Override
 	protected List<Message> customMarriageValidation(Person me, Person other) {
-		// TODO Auto-generated method stub
-		return super.customMarriageValidation(me, other);
+		List<Message> messages = new ArrayList<>();
+		if (me.sex().equals(other.sex())) {
+			messages.add(new NoWeddingWithSameSexAllwoed());
+		}
+		return messages;
 	}
 
 }

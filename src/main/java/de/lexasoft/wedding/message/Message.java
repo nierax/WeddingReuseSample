@@ -50,4 +50,12 @@ public abstract class Message {
 		return severity;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof Message)) {
+			return false;
+		}
+		return ((Message) obj).getClass().equals(this.getClass());
+	}
+
 }

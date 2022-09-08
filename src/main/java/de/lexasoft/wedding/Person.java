@@ -186,6 +186,7 @@ public class Person {
 		}
 		messages.addAll(validateAgeToday(me));
 		messages.addAll(validateAgeToday(other));
+		messages.addAll(customMarriageValidation(me, other));
 		return Result.of(this, messages);
 	}
 
@@ -234,7 +235,7 @@ public class Person {
 	 * @param birthday
 	 * @return
 	 */
-	public final static Person of(FamilyName familyName, FirstName firstName, Sex sex, Birthday birthday) {
+	public static Person of(FamilyName familyName, FirstName firstName, Sex sex, Birthday birthday) {
 		return Person.of(Identity.of(), familyName, firstName, sex, birthday, Country.GERMANY);
 	}
 
