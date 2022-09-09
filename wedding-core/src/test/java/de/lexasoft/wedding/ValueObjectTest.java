@@ -15,19 +15,28 @@
 package de.lexasoft.wedding;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.stream.Stream;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
+
+import de.lexasoft.wedding.ValueObject;
 
 /**
  * @author nierax
  *
  */
-class SexTest {
+class ValueObjectTest {
+
+	@SuppressWarnings("serial")
+	class CUT extends ValueObject<String> {
+
+		protected CUT(String value) {
+			super(value);
+		}
+	}
 
 	/**
 	 * @throws java.lang.Exception
@@ -36,23 +45,17 @@ class SexTest {
 	void setUp() throws Exception {
 	}
 
-	private static Stream<Arguments> testEquals() {
-		return Stream.of(//
-		    Arguments.of(Sex.of(SexEnum.MALE), Sex.of(SexEnum.MALE), true),
-		    Arguments.of(Sex.of(SexEnum.FEMALE), Sex.of(SexEnum.FEMALE), true),
-		    Arguments.of(Sex.of(SexEnum.DIVERS), Sex.of(SexEnum.DIVERS), true),
-		    Arguments.of(Sex.of(SexEnum.MALE), Sex.of(SexEnum.FEMALE), false),
-		    Arguments.of(Sex.of(SexEnum.FEMALE), Sex.of(SexEnum.MALE), false),
-		    Arguments.of(Sex.of(SexEnum.DIVERS), Sex.of(SexEnum.MALE), false),
-		    Arguments.of(Sex.of(SexEnum.MALE), Sex.of(SexEnum.DIVERS), false),
-		    Arguments.of(Sex.of(SexEnum.DIVERS), Sex.of(SexEnum.FEMALE), false),
-		    Arguments.of(Sex.of(SexEnum.FEMALE), Sex.of(SexEnum.DIVERS), false));
+	@Test
+	final void nullNotAcceptedAsValue() {
+		assertThrows(IllegalArgumentException.class, //
+		    () -> new CUT(null));
 	}
 
 	@ParameterizedTest
-	@MethodSource
-	final void testEquals(Sex sex1, Sex sex2, boolean expected) {
-		assertEquals(expected, sex1.equals(sex2));
+	@ValueSource(strings = { "Me", "too", "yes", "no", "i don't know why, but it's ok.", "" })
+	final void acceptStringsAsValues(String value) {
+		CUT cut = new CUT(value);
+		assertEquals(value, cut.value());
 	}
 
 }

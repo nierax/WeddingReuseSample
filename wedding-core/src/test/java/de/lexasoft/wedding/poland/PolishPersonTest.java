@@ -33,6 +33,8 @@ import de.lexasoft.wedding.Result;
 import de.lexasoft.wedding.Sex;
 import de.lexasoft.wedding.SexEnum;
 import de.lexasoft.wedding.message.MessageSeverity;
+import de.lexasoft.wedding.poland.NoWeddingWithSameSexAllwoed;
+import de.lexasoft.wedding.poland.PolishPerson;
 
 /**
  * @author nierax
