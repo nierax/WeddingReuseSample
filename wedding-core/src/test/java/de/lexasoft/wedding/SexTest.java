@@ -23,9 +23,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import de.lexasoft.wedding.Sex;
-import de.lexasoft.wedding.SexEnum;
-
 /**
  * @author nierax
  *
