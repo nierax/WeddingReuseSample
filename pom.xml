@@ -7,8 +7,23 @@
 
 	<packaging>pom</packaging>
 
+	<modules>
+		<module>wedding-core</module>
+		<module>wedding-poland</module>
+	</modules>
+
 	<dependencyManagement>
 		<dependencies>
+			<dependency>
+				<groupId>de.lexasoft</groupId>
+				<artifactId>wedding-core</artifactId>
+				<version>0.0.1-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>de.lexasoft</groupId>
+				<artifactId>wedding-poland</artifactId>
+				<version>0.0.1-SNAPSHOT</version>
+			</dependency>
 			<dependency>
 				<groupId>org.junit.jupiter</groupId>
 				<artifactId>junit-jupiter</artifactId>
