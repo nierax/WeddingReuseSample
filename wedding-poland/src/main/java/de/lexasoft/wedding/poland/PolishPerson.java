@@ -58,7 +58,7 @@ public class PolishPerson extends Person {
 	protected List<Message> customMarriageValidation(Person me, Person other) {
 		List<Message> messages = new ArrayList<>();
 		if (me.sex().equals(other.sex())) {
-			messages.add(new NoWeddingWithSameSexAllwoed());
+			messages.add(new NoWeddingWithSameSexAllowed());
 		}
 		return messages;
 	}

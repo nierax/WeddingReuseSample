@@ -24,13 +24,13 @@ import de.lexasoft.wedding.message.MessageText;
  * @author nierax
  *
  */
-public class NoWeddingWithSameSexAllwoed extends Message {
+public class NoWeddingWithSameSexAllowed extends Message {
 
 	/**
 	 * @param text
 	 * @param severity
 	 */
-	public NoWeddingWithSameSexAllwoed() {
+	public NoWeddingWithSameSexAllowed() {
 		super(MessageText.of("Not allowed to marry a person with same sex in Poland"), MessageSeverity.ERROR);
 	}
 

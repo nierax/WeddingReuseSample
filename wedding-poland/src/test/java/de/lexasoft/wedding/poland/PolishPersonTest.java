@@ -88,7 +88,7 @@ class PolishPersonTest {
 	@MethodSource
 	final void no_marriage_between_persons_of_same_sex(Person person1, Person person2) {
 		Result<Person> result = person1.marries(person2);
-		assertThat(result.messages(), hasItem(new NoWeddingWithSameSexAllwoed()));
+		assertThat(result.messages(), hasItem(new NoWeddingWithSameSexAllowed()));
 		assertEquals(MessageSeverity.ERROR, result.resultSeverity());
 	}
 
