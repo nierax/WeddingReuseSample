@@ -51,4 +51,13 @@ public class Date extends ValueObject<LocalDate> {
 		return Date.of(LocalDate.of(year, month, dayOfMonth));
 	}
 
+	/**
+	 * Returns a Date object with the value today.
+	 * 
+	 * @return Date object with the value today.
+	 */
+	public static Date of() {
+		return Date.of(LocalDate.now());
+	}
+
 }

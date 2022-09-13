@@ -65,30 +65,39 @@ class PersonTest {
 		assertFalse(cut.isMarried());
 	}
 
+	private static final Stream<Arguments> marries_otherPerson() {
+		return Stream.of(//
+		    // Today
+		    Arguments.of(Date.of()),
+		    // Day in future
+		    Arguments.of(Date.of(LocalDate.of(2022, 11, 27))),
+		    // Day in the past
+		    Arguments.of(Date.of(LocalDate.of(2020, 11, 27))));
+	}
+
 	/**
 	 * Marriage to another person.
 	 */
-	@Test
-	final void marries_otherPerson() {
+	@ParameterizedTest
+	@MethodSource
+	final void marries_otherPerson(Date dateOfWedding) {
 		Person partner = Person.of(//
 		    FamilyName.of("Miller"), //
 		    FirstName.of("Maria"), //
 		    Sex.of(SexEnum.FEMALE), //
 		    Birthday.of(1999, 12, 22));
 
-		Date expectedDateOfWeddingToday = Date.of(LocalDate.now());
-
 		// Now they marry each other. Should return the partner.
-		Result<Person> result = cut.marries(partner);
+		Result<Person> result = cut.marries(partner, dateOfWedding);
 
 		// Are they married correctly?
 		assertEquals(cut, result.value());
 		assertTrue(cut.isMarried());
 		assertEquals(partner.id(), cut.marriedWithID());
-		assertEquals(expectedDateOfWeddingToday, cut.dateOfWedding());
+		assertEquals(dateOfWedding, cut.dateOfWedding());
 		assertTrue(partner.isMarried());
 		assertEquals(cut.id(), partner.marriedWithID());
-		assertEquals(expectedDateOfWeddingToday, partner.dateOfWedding());
+		assertEquals(dateOfWedding, partner.dateOfWedding());
 	}
 
 	@Test

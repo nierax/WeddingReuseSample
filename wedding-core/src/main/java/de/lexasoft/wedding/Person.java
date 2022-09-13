@@ -192,7 +192,31 @@ public class Person {
 	}
 
 	/**
-	 * Marriage between two person.
+	 * Marriage between two person at a given date.
+	 * <p>
+	 * In case marriage is not possible, the marriage will not be done and the
+	 * reasons will be delivered inside the message list. In this case the result
+	 * severity is {@link MessageSeverity#ERROR}.
+	 * 
+	 * If everything was ok, the {@link MessageSeverity#NONE} is used.
+	 * 
+	 * @param partner     The partner to be married
+	 * @param weddingDate The date of the wedding
+	 * @return Result with this person.
+	 */
+	public Result<Person> marries(Person partner, Date weddingDate) {
+		Result<Person> result = validatePersonsForMarriage(this, partner);
+		if (!result.isErroneous()) {
+			this.marriedWithID(partner.id());
+			partner.marriedWithID(this.id());
+			this.dateOfWedding(weddingDate);
+			partner.dateOfWedding(weddingDate);
+		}
+		return result;
+	}
+
+	/**
+	 * Marriage between two person at the current day (today).
 	 * <p>
 	 * In case marriage is not possible, the marriage will not be done and the
 	 * reasons will be delivered inside the message list. In this case the result
@@ -204,12 +228,7 @@ public class Person {
 	 * @return Result with this person.
 	 */
 	public Result<Person> marries(Person partner) {
-		Result<Person> result = validatePersonsForMarriage(this, partner);
-		if (!result.isErroneous()) {
-			this.marriedWithID(partner.id());
-			partner.marriedWithID(this.id());
-		}
-		return result;
+		return marries(partner, Date.of());
 	}
 
 	/**
