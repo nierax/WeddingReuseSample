@@ -76,6 +76,8 @@ class PersonTest {
 		    Sex.of(SexEnum.FEMALE), //
 		    Birthday.of(1999, 12, 22));
 
+		Date expectedDateOfWeddingToday = Date.of(LocalDate.now());
+
 		// Now they marry each other. Should return the partner.
 		Result<Person> result = cut.marries(partner);
 
@@ -83,8 +85,10 @@ class PersonTest {
 		assertEquals(cut, result.value());
 		assertTrue(cut.isMarried());
 		assertEquals(partner.id(), cut.marriedWithID());
+		assertEquals(expectedDateOfWeddingToday, cut.dateOfWedding());
 		assertTrue(partner.isMarried());
 		assertEquals(cut.id(), partner.marriedWithID());
+		assertEquals(expectedDateOfWeddingToday, partner.dateOfWedding());
 	}
 
 	@Test

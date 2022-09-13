@@ -38,6 +38,7 @@ public class Person {
 	private FirstName firstName;
 	private Sex sex;
 	private Birthday birthday;
+	private Date dateOfWedding;
 	private Identity marriedWithID;
 	private Country country;
 
@@ -266,6 +267,21 @@ public class Person {
 	public final static Person of(Identity id, FamilyName familyName, FirstName firstName, Sex sex, Birthday birthday,
 	    Country country) {
 		return new Person(id, familyName, firstName, sex, birthday, country);
+	}
+
+	/**
+	 * @return the dateOfWedding
+	 */
+	public Date dateOfWedding() {
+		return dateOfWedding;
+	}
+
+	/**
+	 * @param dateOfWedding the dateOfWedding to set
+	 */
+	public Date dateOfWedding(Date dateOfWedding) {
+		this.dateOfWedding = dateOfWedding;
+		return this.dateOfWedding;
 	}
 
 }

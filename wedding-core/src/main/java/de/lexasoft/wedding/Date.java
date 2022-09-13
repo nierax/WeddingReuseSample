@@ -17,24 +17,38 @@ package de.lexasoft.wedding;
 import java.time.LocalDate;
 
 /**
- * Value object representing the birthday of a person.
+ * Represents any date in the model.
  * 
  * @author nierax
  *
  */
 @SuppressWarnings("serial")
-public class Birthday extends Date {
+public class Date extends ValueObject<LocalDate> {
 
-	private Birthday(LocalDate value) {
+	protected Date(LocalDate value) {
 		super(value);
 	}
 
-	public final static Birthday of(LocalDate value) {
-		return new Birthday(value);
+	/**
+	 * Returns a Date object with the given value.
+	 * 
+	 * @param value The date to be represented.
+	 * @return Date object with the given value
+	 */
+	public static Date of(LocalDate value) {
+		return new Date(value);
 	}
 
-	public final static Birthday of(int year, int month, int dayOfMonth) {
-		return of(LocalDate.of(year, month, dayOfMonth));
+	/**
+	 * Returns a Date object with the given value.
+	 * 
+	 * @param year       The year of the date
+	 * @param month      The month of the date
+	 * @param dayOfMonth The day in month of the date
+	 * @return Date object with the given value
+	 */
+	public static Date of(int year, int month, int dayOfMonth) {
+		return Date.of(LocalDate.of(year, month, dayOfMonth));
 	}
 
 }
