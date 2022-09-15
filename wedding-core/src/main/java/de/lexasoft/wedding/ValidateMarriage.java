@@ -24,6 +24,7 @@ import de.lexasoft.wedding.message.Message;
  * @author nierax
  *
  */
+@FunctionalInterface
 public interface ValidateMarriage {
 
 	/**

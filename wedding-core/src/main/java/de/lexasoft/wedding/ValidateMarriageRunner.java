@@ -16,6 +16,7 @@ package de.lexasoft.wedding;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.StreamSupport;
 
 import de.lexasoft.wedding.message.Message;
 
@@ -28,14 +29,22 @@ import de.lexasoft.wedding.message.Message;
  */
 public class ValidateMarriageRunner implements ValidateMarriage {
 
-	private List<ValidateMarriage> validations = new ArrayList<>();
+	private final List<ValidateMarriage> validations = new ArrayList<>();
 
 	@Override
 	public List<Message> marriageAllowed(Person person1, Person person2) {
-		// TODO Auto-generated method stub
-		return null;
+		List<Message> messages = new ArrayList<>();
+		StreamSupport.stream(validations.spliterator(), false)//
+		    .forEach(v -> messages.addAll(v.marriageAllowed(person1, person2)));
+		return messages;
 	}
 
+	/**
+	 * Adds a validation to the list, which should be checked.
+	 * 
+	 * @param validation The validation to be checked.
+	 * @return The runner itself for fluent API.
+	 */
 	public ValidateMarriageRunner addValidation(ValidateMarriage validation) {
 		this.validations.add(validation);
 		return this;

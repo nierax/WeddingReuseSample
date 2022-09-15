@@ -43,7 +43,6 @@ class ValidateMarriageRunnerTest {
 	private ValidateMarriageRunner cut;
 	private Person person1;
 	private Person person2;
-	private List<Message> messages;
 
 	/**
 	 * @throws java.lang.Exception
@@ -51,7 +50,6 @@ class ValidateMarriageRunnerTest {
 	@BeforeEach
 	void setUp() throws Exception {
 		cut = new ValidateMarriageRunner();
-		messages = new ArrayList<>();
 		person1 = Person.of(//
 		    FamilyName.of("FamilyName1"), //
 		    FirstName.of("FirstName1"), //
@@ -74,6 +72,12 @@ class ValidateMarriageRunnerTest {
 		assertEquals(0, messages.size());
 	}
 
+	private List<Message> createListWithMessage(MessageSeverity severity) {
+		List<Message> messages = new ArrayList<>();
+		messages.add(new TestMessage(severity));
+		return messages;
+	}
+
 	/**
 	 * If the runner has one entry with an error message, this one should be in the
 	 * list.
@@ -81,8 +85,7 @@ class ValidateMarriageRunnerTest {
 	@Test
 	final void one_entry_with_error_must_be_in_list() {
 		cut.addValidation((person1, person2) -> {
-			messages.add(new TestMessage(MessageSeverity.ERROR));
-			return messages;
+			return createListWithMessage(MessageSeverity.ERROR);
 		});
 
 		List<Message> resultMessages = cut.marriageAllowed(person1, person2);
@@ -97,7 +100,7 @@ class ValidateMarriageRunnerTest {
 	@Test
 	final void one_entry_with_no_message_list_must_be_empty() {
 		cut.addValidation((person1, person2) -> {
-			return messages;
+			return new ArrayList<>();
 		});
 
 		List<Message> resultMessages = cut.marriageAllowed(person1, person2);
@@ -111,12 +114,11 @@ class ValidateMarriageRunnerTest {
 	@Test
 	final void two_entries_with_one_error_and_no_message_list_must_contain_error() {
 		cut.addValidation((person1, person2) -> {
-			messages.add(new TestMessage(MessageSeverity.ERROR));
-			return messages;
+			return createListWithMessage(MessageSeverity.ERROR);
 		});
 
 		cut.addValidation((person1, person2) -> {
-			return messages;
+			return new ArrayList<>();
 		});
 
 		List<Message> resultMessages = cut.marriageAllowed(person1, person2);
@@ -131,17 +133,15 @@ class ValidateMarriageRunnerTest {
 	@Test
 	final void two_entries_with_one_error_and_a_warning_both_message_must_be_in_list() {
 		cut.addValidation((person1, person2) -> {
-			messages.add(new TestMessage(MessageSeverity.ERROR));
-			return messages;
+			return createListWithMessage(MessageSeverity.ERROR);
 		});
 
 		cut.addValidation((person1, person2) -> {
-			messages.add(new TestMessage(MessageSeverity.WARNING));
-			return messages;
+			return createListWithMessage(MessageSeverity.WARNING);
 		});
 
 		List<Message> resultMessages = cut.marriageAllowed(person1, person2);
-		assertEquals(1, resultMessages.size());
+		assertEquals(2, resultMessages.size());
 		assertEquals(MessageSeverity.ERROR, resultMessages.get(0).severity());
 		assertEquals(MessageSeverity.WARNING, resultMessages.get(1).severity());
 	}
