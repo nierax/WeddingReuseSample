@@ -156,17 +156,23 @@ class PersonTest {
 		assertSame(severity, result.resultSeverity());
 	}
 
-	private final static Stream<Arguments> both_persons_must_not_be_married_before() {
-		Person partnerUsedToBeFemale = Person.of(//
+	private final static Person partnerUsedToBeFemale() {
+		return Person.of(//
 		    FamilyName.of("PartnerUsedToBeFemale"), //
 		    FirstName.of("other"), //
 		    Sex.of(SexEnum.FEMALE), //
 		    birthdayForAge(20));
-		Person partnerUsedToBeMale = Person.of(//
+	}
+
+	private final static Person partnerUsedToBeMale() {
+		return Person.of(//
 		    FamilyName.of("PartnerUsedToBeMale"), //
 		    FirstName.of("other"), //
 		    Sex.of(SexEnum.MALE), //
 		    birthdayForAge(30));
+	}
+
+	private final static Stream<Arguments> both_persons_must_not_be_married_before() {
 		return Stream.of(//
 		    Arguments.of(//
 		        // Valid, not married
@@ -177,7 +183,7 @@ class PersonTest {
 		    // Not valid, first partner married
 		    Arguments.of(//
 		        Person.of(FamilyName.of("fam1"), FirstName.of("first1"), Sex.of(SexEnum.MALE), birthdayForAge(20))
-		            .marries(partnerUsedToBeFemale).value(),
+		            .marries(partnerUsedToBeFemale()).value(),
 		        Person.of(FamilyName.of("fam2"), FirstName.of("first2"), Sex.of(SexEnum.FEMALE), birthdayForAge(18)), //
 		        1, //
 		        MessageSeverity.ERROR), //
@@ -185,15 +191,15 @@ class PersonTest {
 		    Arguments.of(//
 		        Person.of(FamilyName.of("fam1"), FirstName.of("first1"), Sex.of(SexEnum.MALE), birthdayForAge(20)),
 		        Person.of(FamilyName.of("fam2"), FirstName.of("first2"), Sex.of(SexEnum.FEMALE), birthdayForAge(18))
-		            .marries(partnerUsedToBeMale).value(), //
+		            .marries(partnerUsedToBeMale()).value(), //
 		        1, //
 		        MessageSeverity.ERROR), //
 		    // Not valid, second partner married
 		    Arguments.of(//
 		        Person.of(FamilyName.of("fam1"), FirstName.of("first1"), Sex.of(SexEnum.MALE), birthdayForAge(20))
-		            .marries(partnerUsedToBeFemale).value(),
+		            .marries(partnerUsedToBeFemale()).value(),
 		        Person.of(FamilyName.of("fam2"), FirstName.of("first2"), Sex.of(SexEnum.FEMALE), birthdayForAge(18))
-		            .marries(partnerUsedToBeMale).value(), //
+		            .marries(partnerUsedToBeMale()).value(), //
 		        2, //
 		        MessageSeverity.ERROR) //
 		);
