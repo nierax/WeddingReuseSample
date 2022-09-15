@@ -1,5 +1,7 @@
 package de.lexasoft.wedding;
 
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -19,6 +21,7 @@ import de.lexasoft.wedding.message.AtLeast18YearsOldForMarriageRequired;
 import de.lexasoft.wedding.message.Message;
 import de.lexasoft.wedding.message.MessageSeverity;
 import de.lexasoft.wedding.message.MinimumAgeInUSAWarning;
+import de.lexasoft.wedding.message.MustNotBeMarriedBeforeError;
 import de.lexasoft.wedding.message.NotAllowedToMarryMyselfError;
 
 class PersonTest {
@@ -151,6 +154,70 @@ class PersonTest {
 			}
 		}
 		assertSame(severity, result.resultSeverity());
+	}
+
+	private final static Stream<Arguments> both_persons_must_not_be_married_before() {
+		Person partnerUsedToBeFemale = Person.of(//
+		    FamilyName.of("PartnerUsedToBeFemale"), //
+		    FirstName.of("other"), //
+		    Sex.of(SexEnum.FEMALE), //
+		    birthdayForAge(20));
+		Person partnerUsedToBeMale = Person.of(//
+		    FamilyName.of("PartnerUsedToBeMale"), //
+		    FirstName.of("other"), //
+		    Sex.of(SexEnum.MALE), //
+		    birthdayForAge(30));
+		return Stream.of(//
+		    Arguments.of(//
+		        // Valid, not married
+		        Person.of(FamilyName.of("fam1"), FirstName.of("first1"), Sex.of(SexEnum.MALE), birthdayForAge(20)),
+		        Person.of(FamilyName.of("fam2"), FirstName.of("first2"), Sex.of(SexEnum.FEMALE), birthdayForAge(18)), //
+		        0, //
+		        MessageSeverity.NONE), //
+		    // Not valid, first partner married
+		    Arguments.of(//
+		        Person.of(FamilyName.of("fam1"), FirstName.of("first1"), Sex.of(SexEnum.MALE), birthdayForAge(20))
+		            .marries(partnerUsedToBeFemale).value(),
+		        Person.of(FamilyName.of("fam2"), FirstName.of("first2"), Sex.of(SexEnum.FEMALE), birthdayForAge(18)), //
+		        1, //
+		        MessageSeverity.ERROR), //
+		    // Not valid, second partner married
+		    Arguments.of(//
+		        Person.of(FamilyName.of("fam1"), FirstName.of("first1"), Sex.of(SexEnum.MALE), birthdayForAge(20)),
+		        Person.of(FamilyName.of("fam2"), FirstName.of("first2"), Sex.of(SexEnum.FEMALE), birthdayForAge(18))
+		            .marries(partnerUsedToBeMale).value(), //
+		        1, //
+		        MessageSeverity.ERROR), //
+		    // Not valid, second partner married
+		    Arguments.of(//
+		        Person.of(FamilyName.of("fam1"), FirstName.of("first1"), Sex.of(SexEnum.MALE), birthdayForAge(20))
+		            .marries(partnerUsedToBeFemale).value(),
+		        Person.of(FamilyName.of("fam2"), FirstName.of("first2"), Sex.of(SexEnum.FEMALE), birthdayForAge(18))
+		            .marries(partnerUsedToBeMale).value(), //
+		        2, //
+		        MessageSeverity.ERROR) //
+		);
+	}
+
+	/**
+	 * 
+	 * @param person1
+	 * @param person2
+	 * @param nrOfMessages
+	 * @param severity
+	 */
+	@ParameterizedTest
+	@MethodSource
+	final void both_persons_must_not_be_married_before(Person person1, Person person2, int nrOfMessages,
+	    MessageSeverity severity) {
+		// Let's marry ;-)
+		Result<Person> result = person1.marries(person2);
+		// Check the result
+		assertEquals(nrOfMessages, result.nrOfMessages());
+		assertEquals(severity, result.resultSeverity());
+		if (nrOfMessages > 0) {
+			assertThat(result.messages(), hasItem(new MustNotBeMarriedBeforeError(person1)));
+		}
 	}
 
 	static Stream<Arguments> minimal_age_in_nebraska_19_and_21_in_mississippi() {
