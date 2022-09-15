@@ -16,6 +16,7 @@ package de.lexasoft.wedding;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -23,6 +24,7 @@ import org.junit.jupiter.api.Test;
 
 import de.lexasoft.wedding.message.Message;
 import de.lexasoft.wedding.message.MessageSeverity;
+import de.lexasoft.wedding.message.MessageText;
 
 /**
  * @author nierax
@@ -30,9 +32,18 @@ import de.lexasoft.wedding.message.MessageSeverity;
  */
 class ValidateMarriageRunnerTest {
 
+	private class TestMessage extends Message {
+
+		protected TestMessage(MessageSeverity severity) {
+			super(MessageText.of("Any message text"), severity);
+		}
+
+	}
+
 	private ValidateMarriageRunner cut;
 	private Person person1;
 	private Person person2;
+	private List<Message> messages;
 
 	/**
 	 * @throws java.lang.Exception
@@ -40,6 +51,7 @@ class ValidateMarriageRunnerTest {
 	@BeforeEach
 	void setUp() throws Exception {
 		cut = new ValidateMarriageRunner();
+		messages = new ArrayList<>();
 		person1 = Person.of(//
 		    FamilyName.of("FamilyName1"), //
 		    FirstName.of("FirstName1"), //
@@ -60,6 +72,78 @@ class ValidateMarriageRunnerTest {
 	final void empty_List_Must_Not_Crash() {
 		List<Message> messages = cut.marriageAllowed(person1, person2);
 		assertEquals(0, messages.size());
+	}
+
+	/**
+	 * If the runner has one entry with an error message, this one should be in the
+	 * list.
+	 */
+	@Test
+	final void one_entry_with_error_must_be_in_list() {
+		cut.addValidation((person1, person2) -> {
+			messages.add(new TestMessage(MessageSeverity.ERROR));
+			return messages;
+		});
+
+		List<Message> resultMessages = cut.marriageAllowed(person1, person2);
+		assertEquals(1, resultMessages.size());
+		assertEquals(MessageSeverity.ERROR, resultMessages.get(0).severity());
+	}
+
+	/**
+	 * If the runner has one entry with no message, the returned list should be
+	 * empty.
+	 */
+	@Test
+	final void one_entry_with_no_message_list_must_be_empty() {
+		cut.addValidation((person1, person2) -> {
+			return messages;
+		});
+
+		List<Message> resultMessages = cut.marriageAllowed(person1, person2);
+		assertEquals(0, resultMessages.size());
+	}
+
+	/**
+	 * If the runner has two entries with one being an error and the other one no
+	 * message, the returned list should contain the error message, only.
+	 */
+	@Test
+	final void two_entries_with_one_error_and_no_message_list_must_contain_error() {
+		cut.addValidation((person1, person2) -> {
+			messages.add(new TestMessage(MessageSeverity.ERROR));
+			return messages;
+		});
+
+		cut.addValidation((person1, person2) -> {
+			return messages;
+		});
+
+		List<Message> resultMessages = cut.marriageAllowed(person1, person2);
+		assertEquals(1, resultMessages.size());
+		assertEquals(MessageSeverity.ERROR, resultMessages.get(0).severity());
+	}
+
+	/**
+	 * If the runner has two entries with one being an error and the other one a
+	 * warning, the returned list should contain both messages.
+	 */
+	@Test
+	final void two_entries_with_one_error_and_a_warning_both_message_must_be_in_list() {
+		cut.addValidation((person1, person2) -> {
+			messages.add(new TestMessage(MessageSeverity.ERROR));
+			return messages;
+		});
+
+		cut.addValidation((person1, person2) -> {
+			messages.add(new TestMessage(MessageSeverity.WARNING));
+			return messages;
+		});
+
+		List<Message> resultMessages = cut.marriageAllowed(person1, person2);
+		assertEquals(1, resultMessages.size());
+		assertEquals(MessageSeverity.ERROR, resultMessages.get(0).severity());
+		assertEquals(MessageSeverity.WARNING, resultMessages.get(1).severity());
 	}
 
 }
