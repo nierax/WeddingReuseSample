@@ -23,6 +23,7 @@ import de.lexasoft.wedding.message.AtLeast18YearsOldForMarriageRequired;
 import de.lexasoft.wedding.message.Message;
 import de.lexasoft.wedding.message.MessageSeverity;
 import de.lexasoft.wedding.message.MinimumAgeInUSAWarning;
+import de.lexasoft.wedding.message.MustNotBeMarriedBeforeError;
 import de.lexasoft.wedding.message.NotAllowedToMarryMyselfError;
 
 /**
@@ -168,6 +169,14 @@ public class Person {
 		return messages;
 	}
 
+	private List<Message> validateNotMarriedYet(Person person) {
+		List<Message> messages = new ArrayList<>();
+		if (person.isMarried()) {
+			messages.add(new MustNotBeMarriedBeforeError(person));
+		}
+		return messages;
+	}
+
 	protected List<Message> customMarriageValidation(Person me, Person other) {
 		return new ArrayList<>();
 	}
@@ -185,6 +194,8 @@ public class Person {
 		if (isSamePerson(other)) {
 			messages.add(new NotAllowedToMarryMyselfError());
 		}
+		messages.addAll(validateNotMarriedYet(me));
+		messages.addAll(validateNotMarriedYet(other));
 		messages.addAll(validateAgeToday(me));
 		messages.addAll(validateAgeToday(other));
 		messages.addAll(customMarriageValidation(me, other));
