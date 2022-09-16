@@ -40,6 +40,7 @@ public class Person {
 	private Birthday birthday;
 	private Identity marriedWithID;
 	private Country country;
+	private final ValidateMarriage validations;
 
 	private static final long MIN_AGE_TO_MARRY = 18;
 	private static final long MIN_AGE_TO_MARRY_MISSISSIPPI = 21;
@@ -66,6 +67,20 @@ public class Person {
 		this.sex = sex;
 		this.birthday = birthday;
 		this.country = country;
+		this.validations = createValidations();
+	}
+
+	private ValidateMarriageRunner createValidations() {
+		ValidateMarriageRunner runner = new ValidateMarriageRunner();
+		runner.addValidation((person1, person2) -> {
+			List<Message> messages = new ArrayList<>();
+			if (isSamePerson(person2)) {
+				messages.add(new NotAllowedToMarryMyselfError());
+			}
+			return messages;
+		});
+
+		return runner;
 	}
 
 	public Identity id() {
@@ -181,9 +196,10 @@ public class Person {
 	 */
 	private Result<Person> validatePersonsForMarriage(Person me, Person other) {
 		List<Message> messages = new ArrayList<>();
-		if (isSamePerson(other)) {
-			messages.add(new NotAllowedToMarryMyselfError());
-		}
+//		if (isSamePerson(other)) {
+//			messages.add(new NotAllowedToMarryMyselfError());
+//		}
+		messages.addAll(validations().marriageAllowed(me, other));
 		messages.addAll(validateAgeToday(me));
 		messages.addAll(validateAgeToday(other));
 		messages.addAll(customMarriageValidation(me, other));
@@ -266,6 +282,14 @@ public class Person {
 	public final static Person of(Identity id, FamilyName familyName, FirstName firstName, Sex sex, Birthday birthday,
 	    Country country) {
 		return new Person(id, familyName, firstName, sex, birthday, country);
+	}
+
+	/**
+	 * 
+	 * @return The list of marriage validations connected to this person
+	 */
+	private ValidateMarriage validations() {
+		return validations;
 	}
 
 }
