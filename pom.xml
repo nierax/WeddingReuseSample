@@ -9,6 +9,7 @@
 
 	<modules>
 		<module>wedding-core</module>
+		<module>wedding-germany</module>
 		<module>wedding-poland</module>
 	</modules>
 

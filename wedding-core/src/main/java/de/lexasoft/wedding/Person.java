@@ -196,9 +196,6 @@ public class Person {
 	 */
 	private Result<Person> validatePersonsForMarriage(Person me, Person other) {
 		List<Message> messages = new ArrayList<>();
-//		if (isSamePerson(other)) {
-//			messages.add(new NotAllowedToMarryMyselfError());
-//		}
 		messages.addAll(validations().marriageAllowed(me, other));
 		messages.addAll(validateAgeToday(me));
 		messages.addAll(validateAgeToday(other));
