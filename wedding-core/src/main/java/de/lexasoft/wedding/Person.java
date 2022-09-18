@@ -19,10 +19,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.lexasoft.wedding.message.AtLeast18YearsOldForMarriageRequired;
 import de.lexasoft.wedding.message.Message;
 import de.lexasoft.wedding.message.MessageSeverity;
-import de.lexasoft.wedding.message.MinimumAgeInUSAWarning;
 import de.lexasoft.wedding.message.NotAllowedToMarryMyselfError;
 
 /**
@@ -40,10 +38,7 @@ public class Person {
 	private Birthday birthday;
 	private Identity marriedWithID;
 	private Country country;
-	private final ValidateMarriage validations;
-
-	private static final long MIN_AGE_TO_MARRY = 18;
-	private static final long MIN_AGE_TO_MARRY_MISSISSIPPI = 21;
+	private final ValidateMarriageRunner validations;
 
 	@SuppressWarnings("serial")
 	class IdMustNotBeNullException extends RuntimeException {
@@ -85,6 +80,17 @@ public class Person {
 
 	public Identity id() {
 		return id;
+	}
+
+	/**
+	 * Adds a validation to teh list of validations. To be used in factory only.
+	 * 
+	 * @param validation
+	 * @return
+	 */
+	public Person addValidation(ValidateMarriage validation) {
+		this.validations.addValidation(validation);
+		return this;
 	}
 
 	/**
@@ -151,37 +157,6 @@ public class Person {
 		return this.marriedWithID != null;
 	}
 
-	/**
-	 * Validates, whether the given person is at least 18 Years old.
-	 * <p>
-	 * If so and if the person lives in USA, the age for Nebraska and Mississippi is
-	 * checked as well.
-	 * <p>
-	 * In that case an additional warning appears.
-	 * 
-	 * @param person
-	 * @return
-	 */
-	private List<Message> validateAgeToday(Person person) {
-		List<Message> messages = new ArrayList<>();
-		if (person.ageInYearsToday() < MIN_AGE_TO_MARRY) {
-			messages.add(new AtLeast18YearsOldForMarriageRequired(person));
-		} else {
-			messages.addAll(validateAgeTodayInUSA(person));
-		}
-		return messages;
-	}
-
-	private List<Message> validateAgeTodayInUSA(Person person) {
-		List<Message> messages = new ArrayList<>();
-		if (person.country() == Country.UNITED_STATES) {
-			if (person.ageInYearsToday() < MIN_AGE_TO_MARRY_MISSISSIPPI) {
-				messages.add(new MinimumAgeInUSAWarning(person));
-			}
-		}
-		return messages;
-	}
-
 	protected List<Message> customMarriageValidation(Person me, Person other) {
 		return new ArrayList<>();
 	}
@@ -197,8 +172,6 @@ public class Person {
 	private Result<Person> validatePersonsForMarriage(Person me, Person other) {
 		List<Message> messages = new ArrayList<>();
 		messages.addAll(validations().marriageAllowed(me, other));
-		messages.addAll(validateAgeToday(me));
-		messages.addAll(validateAgeToday(other));
 		messages.addAll(customMarriageValidation(me, other));
 		return Result.of(this, messages);
 	}
@@ -274,6 +247,7 @@ public class Person {
 	 * @param firstName
 	 * @param sex
 	 * @param birthday
+	 * @param country
 	 * @return
 	 */
 	public final static Person of(Identity id, FamilyName familyName, FirstName firstName, Sex sex, Birthday birthday,
