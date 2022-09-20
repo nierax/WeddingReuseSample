@@ -25,7 +25,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import de.lexasoft.wedding.Birthday;
+import de.lexasoft.wedding.BirthdayTestSupport;
 import de.lexasoft.wedding.FamilyName;
 import de.lexasoft.wedding.FirstName;
 import de.lexasoft.wedding.Person;
@@ -38,38 +38,41 @@ import de.lexasoft.wedding.message.MessageSeverity;
  * @author nierax
  *
  */
-class PolishPersonTest {
+class PolandPersonFactoryTest {
 
-	private static PolishPerson male01;
-	private static PolishPerson male02;
-	private static PolishPerson female01;
-	private static PolishPerson female02;
+	private static Person male01;
+	private static Person male02;
+	private static Person female01;
+	private static Person female02;
+
+	private static PolandPersonFactory cut;
 
 	/**
 	 * @throws java.lang.Exception
 	 */
 	@BeforeAll
 	static void setUp() throws Exception {
-		male01 = PolishPerson.of(//
+		cut = PolandPersonFactory.of();
+		male01 = cut.createPerson(//
 		    FamilyName.of("Nowak"), //
 		    FirstName.of("Jakub"), //
 		    Sex.of(SexEnum.MALE), //
-		    Birthday.of(1990, 9, 11));
-		male02 = PolishPerson.of(//
+		    BirthdayTestSupport.birthdayForAge(30));
+		male02 = cut.createPerson(//
 		    FamilyName.of("Kowalski"), //
 		    FirstName.of("Antoni"), //
 		    Sex.of(SexEnum.MALE), //
-		    Birthday.of(1993, 8, 11));
-		female01 = PolishPerson.of(//
+		    BirthdayTestSupport.birthdayForAge(28));
+		female01 = cut.createPerson(//
 		    FamilyName.of("Lewandowska"), //
 		    FirstName.of("Zuzanna"), //
 		    Sex.of(SexEnum.FEMALE), //
-		    Birthday.of(1990, 9, 11));
-		female02 = PolishPerson.of(//
+		    BirthdayTestSupport.birthdayForAge(32));
+		female02 = cut.createPerson(//
 		    FamilyName.of("Krawczyk"), //
 		    FirstName.of("Lena"), //
 		    Sex.of(SexEnum.FEMALE), //
-		    Birthday.of(1993, 8, 11));
+		    BirthdayTestSupport.birthdayForAge(29));
 	}
 
 	private static Stream<Arguments> no_marriage_between_persons_of_same_sex() {

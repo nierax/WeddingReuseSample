@@ -13,6 +13,12 @@
 			<artifactId>wedding-core</artifactId>
 		</dependency>	
 		<dependency>
+			<groupId>de.lexasoft</groupId>
+			<artifactId>wedding-core</artifactId>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter</artifactId>
 			<scope>test</scope>
