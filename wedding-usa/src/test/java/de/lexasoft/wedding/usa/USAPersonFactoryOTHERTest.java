@@ -12,7 +12,7 @@
  * You should have received a copy of the GNU General Public License along with this program; 
  * if not, see <http://www.gnu.org/licenses/>. 
  */
-package de.lexasoft.wedding.germany;
+package de.lexasoft.wedding.usa;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -32,9 +32,9 @@ import de.lexasoft.wedding.message.MessageSeverity;
  * @author nierax
  *
  */
-class GermanPersonFactoryTest {
+class USAPersonFactoryOTHERTest {
 
-	private GermanPersonFactory cut;
+	private USAPersonFactory cut;
 
 	private Person male_30_years_old;
 	private Person female_28_years_old;
@@ -46,7 +46,7 @@ class GermanPersonFactoryTest {
 	 */
 	@BeforeEach
 	void setUp() throws Exception {
-		cut = GermanPersonFactory.of();
+		cut = USAPersonFactory.of(USAState.OTHER);
 		male_30_years_old = cut.createPerson(//
 		    FamilyName.of("Family1"), //
 		    FirstName.of("First1"), //

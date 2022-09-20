@@ -12,7 +12,7 @@
  * You should have received a copy of the GNU General Public License along with this program; 
  * if not, see <http://www.gnu.org/licenses/>. 
  */
-package de.lexasoft.wedding.germany;
+package de.lexasoft.wedding.usa;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -32,74 +32,74 @@ import de.lexasoft.wedding.message.MessageSeverity;
  * @author nierax
  *
  */
-class GermanPersonFactoryTest {
+class USAPersonFactoryNEBRASKATest {
 
-	private GermanPersonFactory cut;
+	private USAPersonFactory cut;
 
 	private Person male_30_years_old;
-	private Person female_28_years_old;
-	private Person male_17_years_old;
-	private Person female_16_years_old;
+	private Person female_19_years_old;
+	private Person male_18_years_old;
+	private Person female_17_years_old;
 
 	/**
 	 * @throws java.lang.Exception
 	 */
 	@BeforeEach
 	void setUp() throws Exception {
-		cut = GermanPersonFactory.of();
+		cut = USAPersonFactory.of(USAState.NEBRASKA);
 		male_30_years_old = cut.createPerson(//
 		    FamilyName.of("Family1"), //
 		    FirstName.of("First1"), //
 		    Sex.of(SexEnum.MALE), //
 		    BirthdayTestSupport.birthdayForAge(30));
 
-		female_28_years_old = cut.createPerson(//
+		female_19_years_old = cut.createPerson(//
 		    FamilyName.of("Family2"), //
 		    FirstName.of("First2"), //
 		    Sex.of(SexEnum.FEMALE), //
-		    BirthdayTestSupport.birthdayForAge(28));
+		    BirthdayTestSupport.birthdayForAge(19));
 
-		male_17_years_old = cut.createPerson(//
+		male_18_years_old = cut.createPerson(//
 		    FamilyName.of("Family1"), //
 		    FirstName.of("First1"), //
 		    Sex.of(SexEnum.MALE), //
-		    BirthdayTestSupport.birthdayForAge(17));
+		    BirthdayTestSupport.birthdayForAge(18));
 
-		female_16_years_old = cut.createPerson(//
+		female_17_years_old = cut.createPerson(//
 		    FamilyName.of("Family2"), //
 		    FirstName.of("First2"), //
 		    Sex.of(SexEnum.FEMALE), //
-		    BirthdayTestSupport.birthdayForAge(16));
+		    BirthdayTestSupport.birthdayForAge(17));
 	}
 
 	/**
-	 * If both persons are over 18 years old, they may marry.
+	 * If both persons are at and over 19 years old, they may marry.
 	 */
 	@Test
-	final void both_persons_over_18_years_may_marry() {
-		Result<Person> result = male_30_years_old.marries(female_28_years_old);
+	final void both_persons_over_19_years_may_marry() {
+		Result<Person> result = male_30_years_old.marries(female_19_years_old);
 		assertEquals(MessageSeverity.NONE, result.resultSeverity());
 		assertEquals(male_30_years_old, result.value());
 	}
 
 	/**
-	 * If one person is under 18 years old, they must not marry.
+	 * If one person is under 19 years old, they must not marry.
 	 */
 	@Test
-	final void one_person_under_18_years_must_not_marry() {
-		Result<Person> result = male_30_years_old.marries(female_16_years_old);
+	final void one_person_under_19_years_must_not_marry() {
+		Result<Person> result = male_30_years_old.marries(female_17_years_old);
 		assertEquals(MessageSeverity.ERROR, result.resultSeverity());
 		assertEquals(male_30_years_old, result.value());
 	}
 
 	/**
-	 * If both persons are under 18 years old, they must not marry.
+	 * If both persons are under 19 years old, they must not marry.
 	 */
 	@Test
-	final void both_persons_under_18_years_must_not_marry() {
-		Result<Person> result = male_17_years_old.marries(female_16_years_old);
+	final void both_persons_under_19_years_must_not_marry() {
+		Result<Person> result = male_18_years_old.marries(female_17_years_old);
 		assertEquals(MessageSeverity.ERROR, result.resultSeverity());
-		assertEquals(male_17_years_old, result.value());
+		assertEquals(male_18_years_old, result.value());
 	}
 
 }

@@ -5,8 +5,8 @@
 		<artifactId>wedding</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<artifactId>wedding-germany</artifactId>
-	<name>Wedding in Germany</name>
+	<artifactId>wedding-usa</artifactId>
+	<name>wedding-usa</name>
 
 	<dependencies>
 		<dependency>

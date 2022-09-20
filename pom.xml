@@ -11,6 +11,7 @@
 		<module>wedding-core</module>
 		<module>wedding-germany</module>
 		<module>wedding-poland</module>
+		<module>wedding-usa</module>
 	</modules>
 
 	<dependencyManagement>
@@ -18,6 +19,13 @@
 			<dependency>
 				<groupId>de.lexasoft</groupId>
 				<artifactId>wedding-core</artifactId>
+				<version>0.0.1-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>de.lexasoft</groupId>
+				<artifactId>wedding-core</artifactId>
+				<type>test-jar</type>
+				<scope>test</scope>
 				<version>0.0.1-SNAPSHOT</version>
 			</dependency>
 			<dependency>
