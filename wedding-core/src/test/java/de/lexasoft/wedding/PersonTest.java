@@ -30,10 +30,6 @@ class PersonTest {
 
 	}
 
-	private static Birthday birthdayForAge(long age) {
-		return Birthday.of(LocalDate.now().minusYears(age));
-	}
-
 	private final static Stream<Arguments> testAgeInYearsAtDate() {
 		return Stream.of(//
 		    Arguments.of(LocalDate.of(2008, 11, 27), 18), // 18th birthday

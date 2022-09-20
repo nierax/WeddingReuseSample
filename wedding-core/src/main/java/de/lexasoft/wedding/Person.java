@@ -157,25 +157,6 @@ public class Person {
 		return this.marriedWithID != null;
 	}
 
-	protected List<Message> customMarriageValidation(Person me, Person other) {
-		return new ArrayList<>();
-	}
-
-	/**
-	 * Checks, whether two persons are allowed to marry
-	 * 
-	 * @param me    First person to check
-	 * @param other Second person to check
-	 * @return Result with Person me and the messages according to the validations,
-	 *         if any.
-	 */
-	private Result<Person> validatePersonsForMarriage(Person me, Person other) {
-		List<Message> messages = new ArrayList<>();
-		messages.addAll(validations().marriageAllowed(me, other));
-		messages.addAll(customMarriageValidation(me, other));
-		return Result.of(this, messages);
-	}
-
 	/**
 	 * Marriage between two person.
 	 * <p>
@@ -189,7 +170,7 @@ public class Person {
 	 * @return Result with this person.
 	 */
 	public Result<Person> marries(Person partner) {
-		Result<Person> result = validatePersonsForMarriage(this, partner);
+		Result<Person> result = Result.of(this, validations().marriageAllowed(this, partner));
 		if (!result.isErroneous()) {
 			this.marriedWithID(partner.id());
 			partner.marriedWithID(this.id());
