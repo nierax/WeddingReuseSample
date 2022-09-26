@@ -36,7 +36,10 @@ public class Person {
 	private FirstName firstName;
 	private Sex sex;
 	private Birthday birthday;
+	@Deprecated
 	private PersonId marriedWithID;
+	private FamilyId family;
+	private PartnerShip partnerShip;
 	private Country country;
 	private final ValidateMarriageRunner validations;
 
@@ -63,6 +66,8 @@ public class Person {
 		this.birthday = birthday;
 		this.country = country;
 		this.validations = createValidations();
+		this.partnerShip = PartnerShip.NOT_MARRIED;
+		this.family = FamilyId.NONE;
 	}
 
 	private ValidateMarriageRunner createValidations() {
@@ -242,6 +247,20 @@ public class Person {
 	 */
 	private ValidateMarriage validations() {
 		return validations;
+	}
+
+	/**
+	 * @return the partnerShip
+	 */
+	public PartnerShip partnerShip() {
+		return partnerShip;
+	}
+
+	/**
+	 * @return the family
+	 */
+	public FamilyId family() {
+		return family;
 	}
 
 }

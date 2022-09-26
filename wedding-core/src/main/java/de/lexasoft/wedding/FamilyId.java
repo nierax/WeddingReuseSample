@@ -25,6 +25,8 @@ import java.util.UUID;
 @SuppressWarnings("serial")
 public class FamilyId extends ValueObject<UUID> {
 
+	public static final FamilyId NONE = FamilyId.of("00000000-0000-0000-0000-000000000000");
+
 	/**
 	 * @param value
 	 */

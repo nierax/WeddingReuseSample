@@ -57,6 +57,16 @@ class PersonTest {
 		assertFalse(cut.isMarried());
 	}
 
+	@Test
+	final void partnership_initial_not_married() {
+		assertEquals(PartnerShip.NOT_MARRIED, cut.partnerShip());
+	}
+
+	@Test
+	final void family_initial_none() {
+		assertEquals(FamilyId.NONE, cut.family());
+	}
+
 	/**
 	 * Marriage to another person.
 	 */
