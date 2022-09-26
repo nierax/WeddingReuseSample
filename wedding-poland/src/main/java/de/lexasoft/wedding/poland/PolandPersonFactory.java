@@ -19,7 +19,7 @@ import de.lexasoft.wedding.Birthday;
 import de.lexasoft.wedding.Country;
 import de.lexasoft.wedding.FamilyName;
 import de.lexasoft.wedding.FirstName;
-import de.lexasoft.wedding.Identity;
+import de.lexasoft.wedding.PersonId;
 import de.lexasoft.wedding.Person;
 import de.lexasoft.wedding.Sex;
 import de.lexasoft.wedding.ValidateAgeForMarriage;
@@ -42,7 +42,7 @@ public class PolandPersonFactory extends AbstractPersonFactory {
 		return new PolandPersonFactory();
 	}
 
-	public Person createPerson(Identity id, FamilyName familyName, FirstName firstName, Sex sex, Birthday birthday) {
+	public Person createPerson(PersonId id, FamilyName familyName, FirstName firstName, Sex sex, Birthday birthday) {
 		Person person = createPerson(id, familyName, firstName, sex, birthday, Country.POLAND);
 		person.addValidation(ValidateAgeForMarriage.of(18));
 		person.addValidation(ValidateHeteroSexMarriageOnly.of());
@@ -50,7 +50,7 @@ public class PolandPersonFactory extends AbstractPersonFactory {
 	}
 
 	public Person createPerson(FamilyName familyName, FirstName firstName, Sex sex, Birthday birthday) {
-		return createPerson(Identity.of(), familyName, firstName, sex, birthday);
+		return createPerson(PersonId.of(), familyName, firstName, sex, birthday);
 	}
 
 }

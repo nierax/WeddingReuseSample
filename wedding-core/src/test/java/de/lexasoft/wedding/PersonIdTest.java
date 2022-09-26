@@ -25,29 +25,29 @@ import org.junit.jupiter.api.Test;
  * @author nierax
  *
  */
-class IdentityTest {
+class PersonIdTest {
 
 	private static final String VALID_UUID = "067e6162-3b6f-4ae2-a171-2470b63dff00";
 
-	private Identity cut;
+	private PersonId cut;
 
 	/**
 	 * @throws java.lang.Exception
 	 */
 	@BeforeEach
 	void setUp() throws Exception {
-		this.cut = Identity.of(VALID_UUID);
+		this.cut = PersonId.of(VALID_UUID);
 	}
 
 	/**
-	 * Checks how a Identity is created.
+	 * Checks how a PersonId is created.
 	 */
 	@Test
 	final void testGenerateId() {
 		assertEquals(VALID_UUID, cut.value().toString());
-		cut = Identity.of();
+		cut = PersonId.of();
 		System.out.println("id1: " + cut.value());
-		Identity cut2 = Identity.of();
+		PersonId cut2 = PersonId.of();
 		System.out.println("id2: " + cut2.value());
 		assertNotEquals(cut2.value(), cut.value());
 	}
@@ -56,7 +56,7 @@ class IdentityTest {
 	final void testEquals() {
 		assertTrue(cut.equals(cut));
 		// Other object but same id should also be equal.
-		assertTrue(cut.equals(Identity.of(VALID_UUID)));
+		assertTrue(cut.equals(PersonId.of(VALID_UUID)));
 	}
 
 }

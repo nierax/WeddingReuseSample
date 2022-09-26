@@ -14,34 +14,50 @@
  */
 package de.lexasoft.wedding;
 
+import java.util.UUID;
+
 /**
- * Base for all person factories. Only way to instantiate a person object.
+ * Representing an id of a person.
  * 
  * @author nierax
  *
  */
-public abstract class AbstractPersonFactory {
+@SuppressWarnings("serial")
+public class PersonId extends ValueObject<UUID> {
 
 	/**
-	 * 
+	 * @param value
 	 */
-	protected AbstractPersonFactory() {
+	private PersonId(UUID value) {
+		super(value);
 	}
 
 	/**
-	 * Creates a new person object with the given id.
+	 * Create an identity object with the given id.
 	 * 
-	 * @param id
-	 * @param familyName
-	 * @param firstName
-	 * @param sex
-	 * @param birthday
-	 * @param country
+	 * @param value
 	 * @return
 	 */
-	protected Person createPerson(PersonId id, FamilyName familyName, FirstName firstName, Sex sex, Birthday birthday,
-	    Country country) {
-		return new Person(id, familyName, firstName, sex, birthday, country);
+	public final static PersonId of(String value) {
+		return new PersonId(UUID.fromString(value));
+	}
+
+	/**
+	 * Creates an identity object with a random id.
+	 * 
+	 * @return
+	 */
+	public final static PersonId of() {
+		return new PersonId(UUID.randomUUID());
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof PersonId)) {
+			return false;
+		}
+		PersonId other = (PersonId) obj;
+		return this.value().equals(other.value());
 	}
 
 }

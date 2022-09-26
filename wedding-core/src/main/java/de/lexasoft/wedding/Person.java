@@ -31,12 +31,12 @@ import de.lexasoft.wedding.message.NotAllowedToMarryMyselfError;
  */
 public class Person {
 
-	private final Identity id;
+	private final PersonId id;
 	private FamilyName familyName;
 	private FirstName firstName;
 	private Sex sex;
 	private Birthday birthday;
-	private Identity marriedWithID;
+	private PersonId marriedWithID;
 	private Country country;
 	private final ValidateMarriageRunner validations;
 
@@ -54,7 +54,7 @@ public class Person {
 	/**
 	 * Must not be instantiated from outside the class.
 	 */
-	protected Person(Identity id, FamilyName familyName, FirstName firstName, Sex sex, Birthday birthday,
+	protected Person(PersonId id, FamilyName familyName, FirstName firstName, Sex sex, Birthday birthday,
 	    Country country) {
 		this.id = id;
 		this.familyName = familyName;
@@ -78,7 +78,7 @@ public class Person {
 		return runner;
 	}
 
-	public Identity id() {
+	public PersonId id() {
 		return id;
 	}
 
@@ -138,11 +138,11 @@ public class Person {
 	 * 
 	 * @return The person, this person is married with, null otherwise.
 	 */
-	public Identity marriedWithID() {
+	public PersonId marriedWithID() {
 		return marriedWithID;
 	}
 
-	private Identity marriedWithID(Identity marriedWithID) {
+	private PersonId marriedWithID(PersonId marriedWithID) {
 		if (marriedWithID == null) {
 			throw new IdMustNotBeNullException();
 		}
@@ -203,7 +203,7 @@ public class Person {
 	 * @return
 	 */
 	public static Person of(FamilyName familyName, FirstName firstName, Sex sex, Birthday birthday) {
-		return Person.of(Identity.of(), familyName, firstName, sex, birthday, Country.GERMANY);
+		return Person.of(PersonId.of(), familyName, firstName, sex, birthday, Country.GERMANY);
 	}
 
 	/**
@@ -217,7 +217,7 @@ public class Person {
 	 */
 	public final static Person of(FamilyName familyName, FirstName firstName, Sex sex, Birthday birthday,
 	    Country country) {
-		return Person.of(Identity.of(), familyName, firstName, sex, birthday, country);
+		return Person.of(PersonId.of(), familyName, firstName, sex, birthday, country);
 	}
 
 	/**
@@ -231,7 +231,7 @@ public class Person {
 	 * @param country
 	 * @return
 	 */
-	public final static Person of(Identity id, FamilyName familyName, FirstName firstName, Sex sex, Birthday birthday,
+	public final static Person of(PersonId id, FamilyName familyName, FirstName firstName, Sex sex, Birthday birthday,
 	    Country country) {
 		return new Person(id, familyName, firstName, sex, birthday, country);
 	}

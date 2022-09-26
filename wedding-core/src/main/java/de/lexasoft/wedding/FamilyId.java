@@ -17,18 +17,18 @@ package de.lexasoft.wedding;
 import java.util.UUID;
 
 /**
- * Representing an id of an object.
+ * Representing an id of a family.
  * 
  * @author nierax
  *
  */
 @SuppressWarnings("serial")
-public class Identity extends ValueObject<UUID> {
+public class FamilyId extends ValueObject<UUID> {
 
 	/**
 	 * @param value
 	 */
-	private Identity(UUID value) {
+	private FamilyId(UUID value) {
 		super(value);
 	}
 
@@ -38,8 +38,8 @@ public class Identity extends ValueObject<UUID> {
 	 * @param value
 	 * @return
 	 */
-	public final static Identity of(String value) {
-		return new Identity(UUID.fromString(value));
+	public final static FamilyId of(String value) {
+		return new FamilyId(UUID.fromString(value));
 	}
 
 	/**
@@ -47,16 +47,16 @@ public class Identity extends ValueObject<UUID> {
 	 * 
 	 * @return
 	 */
-	public final static Identity of() {
-		return new Identity(UUID.randomUUID());
+	public final static FamilyId of() {
+		return new FamilyId(UUID.randomUUID());
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (!(obj instanceof Identity)) {
+		if (!(obj instanceof FamilyId)) {
 			return false;
 		}
-		Identity other = (Identity) obj;
+		FamilyId other = (FamilyId) obj;
 		return this.value().equals(other.value());
 	}
 
