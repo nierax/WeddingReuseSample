@@ -22,6 +22,8 @@ import de.lexasoft.wedding.FamilyId;
 import de.lexasoft.wedding.PartnerShip;
 import de.lexasoft.wedding.Person;
 import de.lexasoft.wedding.Result;
+import de.lexasoft.wedding.message.Message;
+import de.lexasoft.wedding.message.MustNotBeMarriedBeforeError;
 
 /**
  * Represents the book of the family in Germany.
@@ -74,6 +76,14 @@ public class BookOfFamily {
 		return of(FamilyId.of(), partner1, partner2);
 	}
 
+	private List<Message> checkNotMarriedBefore(Person person) {
+		List<Message> messages = new ArrayList<>();
+		if (person.partnerShip() == PartnerShip.MARRIED) {
+			messages.add(new MustNotBeMarriedBeforeError(person));
+		}
+		return messages;
+	}
+
 	/**
 	 * Checks, whether both partners are allowed to marry according to laws in
 	 * Germany.
@@ -81,7 +91,11 @@ public class BookOfFamily {
 	 * @return
 	 */
 	public Result<Boolean> allowedToMarry() {
-		return null;
+		List<Message> messages = new ArrayList<>();
+		for (Person person : partner) {
+			messages.addAll(checkNotMarriedBefore(person));
+		}
+		return Result.of(Boolean.valueOf(messages.size() == 0), messages);
 	}
 
 	/**
