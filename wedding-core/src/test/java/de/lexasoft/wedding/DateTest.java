@@ -16,26 +16,20 @@ package de.lexasoft.wedding;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
+ * 
  * @author nierax
  *
  */
-class ValueObjectTest {
-
-	@SuppressWarnings("serial")
-	class CUT extends ValueObject<String> {
-
-		protected CUT(String value) {
-			super(value);
-		}
-	}
+class DateTest {
 
 	/**
 	 * @throws java.lang.Exception
@@ -44,25 +38,28 @@ class ValueObjectTest {
 	void setUp() throws Exception {
 	}
 
-	@Test
-	final void nullNotAcceptedAsValue() {
-		assertThrows(IllegalArgumentException.class, //
-		    () -> new CUT(null));
+	private static final Stream<Arguments> testEquals() {
+		return Stream.of(//
+		    Arguments.of(Date.of(1996, 11, 27), Date.of(1996, 11, 27), true),
+		    Arguments.of(Date.of(1996, 11, 27), Date.of(1996, 11, 28), false),
+		    Arguments.of(Date.of(1996, 11, 27), Date.of(1996, 11, 26), false));
 	}
 
+	/**
+	 * Make sure the equals() method also works for Date objects.
+	 * 
+	 * @param date1
+	 * @param date2
+	 * @param expected
+	 */
 	@ParameterizedTest
-	@ValueSource(strings = { "Me", "too", "yes", "no", "i don't know why, but it's ok.", "" })
-	final void acceptStringsAsValues(String value) {
-		CUT cut = new CUT(value);
-		assertEquals(value, cut.value());
-	}
-
-	@Test
-	final void equals_when_values_are_equal() {
-		assertEquals(new CUT("Me"), new CUT("Me"));
-		assertEquals(new CUT("You"), new CUT("You"));
-		assertNotEquals(new CUT("Me"), new CUT("You"));
-		assertNotEquals(new CUT("You"), "You");
+	@MethodSource
+	final void testEquals(Date date1, Date date2, boolean expected) {
+		if (expected) {
+			assertEquals(date1, date2);
+		} else {
+			assertNotEquals(date1, date2);
+		}
 	}
 
 }

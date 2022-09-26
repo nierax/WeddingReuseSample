@@ -20,6 +20,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import de.lexasoft.wedding.BirthdayTestSupport;
+import de.lexasoft.wedding.Date;
 import de.lexasoft.wedding.FamilyName;
 import de.lexasoft.wedding.FirstName;
 import de.lexasoft.wedding.PartnerShip;
@@ -60,6 +61,16 @@ class BookOfFamilyTest {
 	@Test
 	final void kindOfPartnership_initial_NOT_MARRIED() {
 		assertEquals(PartnerShip.NOT_MARRIED, cut.kindOfPartnership());
+	}
+
+	@Test
+	final void dateOfCreation_is_today_after_creation() {
+		assertEquals(Date.of(), cut.dateOfCreation());
+	}
+
+	@Test
+	final void dateOfWedding_is_NONE_after_creation() {
+		assertEquals(Date.NONE.value(), cut.dateOfWedding().value());
 	}
 
 }

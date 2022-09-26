@@ -57,6 +57,16 @@ public abstract class ValueObject<T> implements Serializable {
 		return value.toString();
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof ValueObject<?>)) {
+			return false;
+		}
+		@SuppressWarnings("unchecked")
+		ValueObject<T> other = (ValueObject<T>) obj;
+		return this.value().equals(other.value);
+	}
+
 }
 
 @SuppressWarnings("serial")

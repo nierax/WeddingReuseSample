@@ -17,9 +17,11 @@ package de.lexasoft.wedding.germany;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.lexasoft.wedding.Date;
 import de.lexasoft.wedding.FamilyId;
 import de.lexasoft.wedding.PartnerShip;
 import de.lexasoft.wedding.Person;
+import de.lexasoft.wedding.Result;
 
 /**
  * Represents the book of the family in Germany.
@@ -32,6 +34,8 @@ public class BookOfFamily {
 	private final FamilyId id;
 	private final List<Person> partner = new ArrayList<>();
 	private PartnerShip kindOfPartnership;
+	private final Date dateOfCreation;
+	private Date dateOfWedding;
 
 	/**
 	 * 
@@ -41,6 +45,8 @@ public class BookOfFamily {
 		this.partner.add(partner2);
 		this.kindOfPartnership = PartnerShip.NOT_MARRIED;
 		this.id = id;
+		this.dateOfCreation = Date.of();
+		this.dateOfWedding = Date.NONE;
 	}
 
 	/**
@@ -69,6 +75,16 @@ public class BookOfFamily {
 	}
 
 	/**
+	 * Checks, whether both partners are allowed to marry according to laws in
+	 * Germany.
+	 * 
+	 * @return
+	 */
+	public Result<Boolean> allowedToMarry() {
+		return null;
+	}
+
+	/**
 	 * The kind of partnership initially is set to NOT_MARRIED. The state can be
 	 * changed by several use cases.
 	 * 
@@ -83,6 +99,27 @@ public class BookOfFamily {
 	 */
 	public FamilyId id() {
 		return id;
+	}
+
+	/**
+	 * @return the dateOfWedding
+	 */
+	public Date dateOfWedding() {
+		return dateOfWedding;
+	}
+
+	/**
+	 * @param dateOfWedding the dateOfWedding to set
+	 */
+	private Date dateOfWedding(Date dateOfWedding) {
+		return (this.dateOfWedding = dateOfWedding);
+	}
+
+	/**
+	 * @return the dateOfCreation
+	 */
+	public Date dateOfCreation() {
+		return dateOfCreation;
 	}
 
 }
