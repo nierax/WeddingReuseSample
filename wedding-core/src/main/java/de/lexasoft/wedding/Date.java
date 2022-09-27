@@ -26,6 +26,7 @@ import java.time.LocalDate;
 public class Date extends ValueObject<LocalDate> {
 
 	public final static Date NONE = Date.of(0, 1, 1);
+	public final static Date TODAY = Date.of(LocalDate.now());
 
 	private Date(LocalDate value) {
 		super(value);

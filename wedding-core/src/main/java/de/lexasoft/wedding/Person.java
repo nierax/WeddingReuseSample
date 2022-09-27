@@ -174,6 +174,7 @@ public class Person {
 	 * @param partner
 	 * @return Result with this person.
 	 */
+	@Deprecated
 	public Result<Person> marries(Person partner) {
 		Result<Person> result = Result.of(this, validations().marriageAllowed(this, partner));
 		if (!result.isErroneous()) {
@@ -181,6 +182,12 @@ public class Person {
 			partner.marriedWithID(this.id());
 		}
 		return result;
+	}
+
+	public Person marries(FamilyId family) {
+		this.family = family;
+		this.partnerShip = PartnerShip.MARRIED;
+		return this;
 	}
 
 	/**

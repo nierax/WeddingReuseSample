@@ -35,6 +35,7 @@ import de.lexasoft.wedding.PersonId;
 import de.lexasoft.wedding.Result;
 import de.lexasoft.wedding.Sex;
 import de.lexasoft.wedding.SexEnum;
+import de.lexasoft.wedding.message.AtLeast18YearsOldForMarriageRequired;
 import de.lexasoft.wedding.message.MessageSeverity;
 import de.lexasoft.wedding.message.MustNotBeMarriedBeforeError;
 
@@ -47,7 +48,8 @@ class BookOfFamilyTest {
 	private BookOfFamily cut;
 	private Person male_28;
 	private Person female_26;
-	private Person old_partner_female_23;
+	private Person male_18;
+	private Person female_17;
 	private MarriedPerson married_person;
 
 	private class MarriedPerson extends Person {
@@ -81,11 +83,17 @@ class BookOfFamilyTest {
 		    Sex.of(SexEnum.FEMALE), //
 		    BirthdayTestSupport.birthdayForAge(26));
 
-		old_partner_female_23 = Person.of(//
-		    FamilyName.of("FamilyName02"), //
-		    FirstName.of("FirstName02"), //
+		male_18 = Person.of(//
+		    FamilyName.of("FamilyName03"), //
+		    FirstName.of("FirstName03"), //
+		    Sex.of(SexEnum.MALE), //
+		    BirthdayTestSupport.birthdayForAge(18));
+
+		female_17 = Person.of(//
+		    FamilyName.of("FamilyName04"), //
+		    FirstName.of("FirstName04"), //
 		    Sex.of(SexEnum.FEMALE), //
-		    BirthdayTestSupport.birthdayForAge(23));
+		    BirthdayTestSupport.birthdayForAge(17));
 
 		married_person = new MarriedPerson(//
 		    PersonId.of(), //
@@ -117,6 +125,11 @@ class BookOfFamilyTest {
 	}
 
 	@Test
+	final void two_partner_in_family_after_creation() {
+		assertEquals(2, cut.partner().size());
+	}
+
+	@Test
 	final void people_must_not_marry_when_one_of_them_is_already_married() {
 		BookOfFamily myCut = BookOfFamily.of(male_28, married_person);
 		Result<Boolean> result = myCut.allowedToMarry();
@@ -131,6 +144,44 @@ class BookOfFamilyTest {
 		assertTrue(result.value());
 		assertEquals(MessageSeverity.NONE, result.resultSeverity());
 		assertEquals(0, result.messages().size());
+	}
+
+	@Test
+	final void must_be_allowed_to_marry_at_18_years_old() {
+		BookOfFamily myCut = BookOfFamily.of(male_18, female_26);
+		Result<Boolean> result = myCut.allowedToMarry();
+		assertTrue(result.value());
+		assertEquals(MessageSeverity.NONE, result.resultSeverity());
+		assertEquals(0, result.messages().size());
+	}
+
+	@Test
+	final void marriage_not_permitted_when_under_18_years_old() {
+		BookOfFamily myCut = BookOfFamily.of(male_18, female_17);
+		Result<Boolean> result = myCut.allowedToMarry();
+		assertFalse(result.value());
+		assertEquals(MessageSeverity.ERROR, result.resultSeverity());
+		assertThat(result.messages(), hasItem(new AtLeast18YearsOldForMarriageRequired(female_17)));
+	}
+
+	@Test
+	final void married_and_too_young_all_messages_required() {
+		BookOfFamily myCut = BookOfFamily.of(married_person, female_17);
+		Result<Boolean> result = myCut.allowedToMarry();
+		assertFalse(result.value());
+		assertEquals(MessageSeverity.ERROR, result.resultSeverity());
+		assertThat(result.messages(), hasItem(new AtLeast18YearsOldForMarriageRequired(female_17)));
+		assertThat(result.messages(), hasItem(new MustNotBeMarriedBeforeError(married_person)));
+	}
+
+	@Test
+	final void marry_when_requirements_are_fulfilled() {
+		Result<BookOfFamily> result = cut.marry();
+		assertEquals(MessageSeverity.NONE, result.resultSeverity());
+		assertEquals(Date.TODAY, cut.dateOfWedding());
+		for (Person partner : cut.partner()) {
+			assertEquals(PartnerShip.MARRIED, partner.partnerShip());
+		}
 	}
 
 }

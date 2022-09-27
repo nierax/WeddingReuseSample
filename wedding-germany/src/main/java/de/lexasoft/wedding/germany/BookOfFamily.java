@@ -22,6 +22,7 @@ import de.lexasoft.wedding.FamilyId;
 import de.lexasoft.wedding.PartnerShip;
 import de.lexasoft.wedding.Person;
 import de.lexasoft.wedding.Result;
+import de.lexasoft.wedding.message.AtLeast18YearsOldForMarriageRequired;
 import de.lexasoft.wedding.message.Message;
 import de.lexasoft.wedding.message.MustNotBeMarriedBeforeError;
 
@@ -84,6 +85,14 @@ public class BookOfFamily {
 		return messages;
 	}
 
+	private List<Message> checkAtLeast18YearsOld(Person person) {
+		List<Message> messages = new ArrayList<>();
+		if (person.ageInYearsToday() < 18) {
+			messages.add(new AtLeast18YearsOldForMarriageRequired(person));
+		}
+		return messages;
+	}
+
 	/**
 	 * Checks, whether both partners are allowed to marry according to laws in
 	 * Germany.
@@ -92,10 +101,29 @@ public class BookOfFamily {
 	 */
 	public Result<Boolean> allowedToMarry() {
 		List<Message> messages = new ArrayList<>();
+//		partner.forEach(p -> {
+//			checkNotMarriedBefore(p);
+//			checkAtLeast18YearsOld(p);
+//		});
 		for (Person person : partner) {
 			messages.addAll(checkNotMarriedBefore(person));
+			messages.addAll(checkAtLeast18YearsOld(person));
 		}
 		return Result.of(Boolean.valueOf(messages.size() == 0), messages);
+	}
+
+	/**
+	 * Makes the persons in this family married, if all requirements are fulfilled.
+	 * 
+	 * @return Result with the instance of this object in it.
+	 */
+	public Result<BookOfFamily> marry() {
+		Result<Boolean> ok = allowedToMarry();
+		if (ok.value()) {
+			dateOfWedding(Date.TODAY);
+			partner.forEach(p -> p.marries(id));
+		}
+		return Result.of(this);
 	}
 
 	/**
@@ -134,6 +162,13 @@ public class BookOfFamily {
 	 */
 	public Date dateOfCreation() {
 		return dateOfCreation;
+	}
+
+	/**
+	 * @return The partner in this family.
+	 */
+	public List<Person> partner() {
+		return new ArrayList<Person>(partner);
 	}
 
 }
