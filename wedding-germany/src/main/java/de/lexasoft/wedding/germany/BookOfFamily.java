@@ -101,14 +101,10 @@ public class BookOfFamily {
 	 */
 	public Result<Boolean> allowedToMarry() {
 		List<Message> messages = new ArrayList<>();
-//		partner.forEach(p -> {
-//			checkNotMarriedBefore(p);
-//			checkAtLeast18YearsOld(p);
-//		});
-		for (Person person : partner) {
-			messages.addAll(checkNotMarriedBefore(person));
-			messages.addAll(checkAtLeast18YearsOld(person));
-		}
+		partner.forEach(p -> {
+			messages.addAll(checkNotMarriedBefore(p));
+			messages.addAll(checkAtLeast18YearsOld(p));
+		});
 		return Result.of(Boolean.valueOf(messages.size() == 0), messages);
 	}
 
