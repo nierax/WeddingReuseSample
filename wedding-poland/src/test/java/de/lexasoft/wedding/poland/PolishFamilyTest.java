@@ -24,15 +24,18 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import de.lexasoft.wedding.BirthdayTestSupport;
+import de.lexasoft.wedding.Date;
 import de.lexasoft.wedding.FamilyName;
 import de.lexasoft.wedding.FirstName;
 import de.lexasoft.wedding.PartnerShip;
 import de.lexasoft.wedding.Person;
 import de.lexasoft.wedding.PersonTestSupport;
+import de.lexasoft.wedding.Result;
 import de.lexasoft.wedding.Sex;
 import de.lexasoft.wedding.SexEnum;
 import de.lexasoft.wedding.message.AtLeast18YearsOldForMarriageRequired;
 import de.lexasoft.wedding.message.Message;
+import de.lexasoft.wedding.message.MessageSeverity;
 import de.lexasoft.wedding.message.MustNotBeMarriedBeforeError;
 
 /**
@@ -114,6 +117,31 @@ class PolishFamilyTest {
 		List<Message> messages = cut.allowedToMarry();
 		assertEquals(1, messages.size());
 		assertThat(messages, hasItem(new NoWeddingWithSameSexAllowed()));
+	}
+
+	@Test
+	final void wedding_ok() {
+		PolishFamily cut = PolishFamily.of(male_28_not_married, female_26_not_married);
+		Result<PolishFamily> result = cut.marry();
+		assertEquals(MessageSeverity.NONE, result.resultSeverity());
+		assertEquals(PartnerShip.MARRIED, result.value().partnerShip());
+		assertEquals(PartnerShip.MARRIED, result.value().partner1().partnerShip());
+		assertEquals(PartnerShip.MARRIED, result.value().partner2().partnerShip());
+		assertEquals(result.value().familyId(), result.value().partner1().family());
+		assertEquals(result.value().familyId(), result.value().partner2().family());
+		assertEquals(Date.TODAY, result.value().dateOfWedding());
+	}
+
+	@Test
+	final void wedding_not_ok() {
+		PolishFamily cut = PolishFamily.of(male_28_not_married, female_16_not_married);
+		Result<PolishFamily> result = cut.marry();
+		assertEquals(MessageSeverity.ERROR, result.resultSeverity());
+		assertEquals(PartnerShip.NOT_MARRIED, result.value().partnerShip());
+		assertEquals(PartnerShip.NOT_MARRIED, result.value().partner1().partnerShip());
+		assertEquals(PartnerShip.NOT_MARRIED, result.value().partner2().partnerShip());
+		assertEquals(Date.NONE, result.value().dateOfWedding());
+		assertThat(result.messages(), hasItem(new AtLeast18YearsOldForMarriageRequired(female_16_not_married)));
 	}
 
 }
