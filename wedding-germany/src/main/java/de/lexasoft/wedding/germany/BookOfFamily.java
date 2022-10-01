@@ -22,9 +22,9 @@ import de.lexasoft.wedding.FamilyId;
 import de.lexasoft.wedding.PartnerShip;
 import de.lexasoft.wedding.Person;
 import de.lexasoft.wedding.Result;
-import de.lexasoft.wedding.message.AtLeast18YearsOldForMarriageRequired;
+import de.lexasoft.wedding.ValidateAgeForMarriage;
+import de.lexasoft.wedding.ValidateNotMarriedBefore;
 import de.lexasoft.wedding.message.Message;
-import de.lexasoft.wedding.message.MustNotBeMarriedBeforeError;
 
 /**
  * Represents the book of the family in Germany.
@@ -77,20 +77,12 @@ public class BookOfFamily {
 		return of(FamilyId.of(), partner1, partner2);
 	}
 
-	private List<Message> checkNotMarriedBefore(Person person) {
-		List<Message> messages = new ArrayList<>();
-		if (person.partnerShip() == PartnerShip.MARRIED) {
-			messages.add(new MustNotBeMarriedBeforeError(person));
-		}
-		return messages;
+	private List<Message> checkNotMarriedBefore() {
+		return ValidateNotMarriedBefore.of().marriageAllowed(partner.get(0), partner.get(1));
 	}
 
-	private List<Message> checkAtLeast18YearsOld(Person person) {
-		List<Message> messages = new ArrayList<>();
-		if (person.ageInYearsToday() < 18) {
-			messages.add(new AtLeast18YearsOldForMarriageRequired(person));
-		}
-		return messages;
+	private List<Message> checkPartnerAtLeast18YearsOld() {
+		return ValidateAgeForMarriage.of(18).marriageAllowed(partner.get(0), partner.get(1));
 	}
 
 	/**
@@ -101,10 +93,8 @@ public class BookOfFamily {
 	 */
 	public Result<Boolean> allowedToMarry() {
 		List<Message> messages = new ArrayList<>();
-		partner.forEach(p -> {
-			messages.addAll(checkNotMarriedBefore(p));
-			messages.addAll(checkAtLeast18YearsOld(p));
-		});
+		messages.addAll(checkPartnerAtLeast18YearsOld());
+		messages.addAll(checkNotMarriedBefore());
 		return Result.of(Boolean.valueOf(messages.size() == 0), messages);
 	}
 
