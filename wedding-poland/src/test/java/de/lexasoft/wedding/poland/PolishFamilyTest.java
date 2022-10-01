@@ -24,6 +24,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import de.lexasoft.wedding.BirthdayTestSupport;
+import de.lexasoft.wedding.Country;
 import de.lexasoft.wedding.Date;
 import de.lexasoft.wedding.FamilyName;
 import de.lexasoft.wedding.FirstName;
@@ -59,27 +60,32 @@ class PolishFamilyTest {
 		    FamilyName.of("Nowak"), //
 		    FirstName.of("Jakub"), //
 		    Sex.of(SexEnum.MALE), //
-		    BirthdayTestSupport.birthdayForAge(28));
+		    BirthdayTestSupport.birthdayForAge(28), //
+		    Country.POLAND);
 		male_31_married = PersonTestSupport.createMarriedPerson(//
 		    FamilyName.of("Kowalski"), //
 		    FirstName.of("Antoni"), //
 		    Sex.of(SexEnum.MALE), //
-		    31);
+		    31, //
+		    Country.POLAND);
 		female_26_not_married = Person.of(//
 		    FamilyName.of("Lewandowska"), //
 		    FirstName.of("Zuzanna"), //
 		    Sex.of(SexEnum.FEMALE), //
-		    BirthdayTestSupport.birthdayForAge(26));
+		    BirthdayTestSupport.birthdayForAge(26), //
+		    Country.POLAND);
 		female_24_not_married = Person.of(//
 		    FamilyName.of("Michalska"), //
 		    FirstName.of("Irena"), //
 		    Sex.of(SexEnum.FEMALE), //
-		    BirthdayTestSupport.birthdayForAge(24));
+		    BirthdayTestSupport.birthdayForAge(24), //
+		    Country.POLAND);
 		female_16_not_married = Person.of(//
 		    FamilyName.of("Krawczyk"), //
 		    FirstName.of("Lena"), //
 		    Sex.of(SexEnum.FEMALE), //
-		    BirthdayTestSupport.birthdayForAge(16));
+		    BirthdayTestSupport.birthdayForAge(16), //
+		    Country.POLAND);
 	}
 
 	@Test

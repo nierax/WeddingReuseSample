@@ -37,8 +37,9 @@ public class PersonTestSupport {
 	 * @param age
 	 * @return Person which is married.
 	 */
-	public final static Person createMarriedPerson(FamilyName familyName, FirstName firstname, Sex sex, int age) {
-		Person person = Person.of(familyName, firstname, sex, BirthdayTestSupport.birthdayForAge(age));
+	public final static Person createMarriedPerson(FamilyName familyName, FirstName firstname, Sex sex, int age,
+	    Country country) {
+		Person person = Person.of(familyName, firstname, sex, BirthdayTestSupport.birthdayForAge(age), country);
 		person.marries(FamilyId.of());
 		return person;
 	}

@@ -63,13 +63,13 @@ class ValidateNotMarriedBeforeTest {
 		    FamilyName.of("Miller"), //
 		    FirstName.of("John"), //
 		    Sex.of(SexEnum.MALE), //
-		    28);
+		    28, Country.GERMANY);
 
 		married_female_31 = PersonTestSupport.createMarriedPerson(//
 		    FamilyName.of("Smith"), //
 		    FirstName.of("Lea"), //
 		    Sex.of(SexEnum.FEMALE), //
-		    31);
+		    31, Country.GERMANY);
 
 		cut = ValidateNotMarriedBefore.of();
 	}
