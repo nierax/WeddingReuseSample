@@ -16,12 +16,6 @@ package de.lexasoft.wedding;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
-
-import de.lexasoft.wedding.message.Message;
-import de.lexasoft.wedding.message.MessageSeverity;
-import de.lexasoft.wedding.message.NotAllowedToMarryMyselfError;
 
 /**
  * Represents a natural person in our system.
@@ -36,12 +30,9 @@ public class Person {
 	private FirstName firstName;
 	private Sex sex;
 	private Birthday birthday;
-	@Deprecated
-	private PersonId marriedWithID;
 	private FamilyId family;
 	private PartnerShip partnerShip;
 	private Country country;
-	private final ValidateMarriageRunner validations;
 
 	@SuppressWarnings("serial")
 	class IdMustNotBeNullException extends RuntimeException {
@@ -65,37 +56,12 @@ public class Person {
 		this.sex = sex;
 		this.birthday = birthday;
 		this.country = country;
-		this.validations = createValidations();
 		this.partnerShip = PartnerShip.NOT_MARRIED;
 		this.family = FamilyId.NONE;
 	}
 
-	private ValidateMarriageRunner createValidations() {
-		ValidateMarriageRunner runner = new ValidateMarriageRunner();
-		runner.addValidation((person1, person2) -> {
-			List<Message> messages = new ArrayList<>();
-			if (isSamePerson(person2)) {
-				messages.add(new NotAllowedToMarryMyselfError());
-			}
-			return messages;
-		});
-
-		return runner;
-	}
-
 	public PersonId id() {
 		return id;
-	}
-
-	/**
-	 * Adds a validation to teh list of validations. To be used in factory only.
-	 * 
-	 * @param validation
-	 * @return
-	 */
-	public Person addValidation(ValidateMarriage validation) {
-		this.validations.addValidation(validation);
-		return this;
 	}
 
 	/**
@@ -141,49 +107,19 @@ public class Person {
 
 	/**
 	 * 
-	 * @return The person, this person is married with, null otherwise.
-	 */
-	public PersonId marriedWithID() {
-		return marriedWithID;
-	}
-
-	private PersonId marriedWithID(PersonId marriedWithID) {
-		if (marriedWithID == null) {
-			throw new IdMustNotBeNullException();
-		}
-		return this.marriedWithID = marriedWithID;
-	}
-
-	/**
-	 * 
 	 * @return True, if married. False otherwise.
 	 */
 	public boolean isMarried() {
-		return this.marriedWithID != null;
+		return this.partnerShip == PartnerShip.MARRIED;
 	}
 
 	/**
-	 * Marriage between two person.
-	 * <p>
-	 * In case marriage is not possible, the marriage will not be done and the
-	 * reasons will be delivered inside the message list. In this case the result
-	 * severity is {@link MessageSeverity#ERROR}.
+	 * Register this person as a partner in the family, represented by the given id
+	 * and being married.
 	 * 
-	 * If everything was ok, the {@link MessageSeverity#NONE} is used.
-	 * 
-	 * @param partner
-	 * @return Result with this person.
+	 * @param family The id of the family
+	 * @return This person, now being married.
 	 */
-	@Deprecated
-	public Result<Person> marries(Person partner) {
-		Result<Person> result = Result.of(this, validations().marriageAllowed(this, partner));
-		if (!result.isErroneous()) {
-			this.marriedWithID(partner.id());
-			partner.marriedWithID(this.id());
-		}
-		return result;
-	}
-
 	public Person marries(FamilyId family) {
 		this.family = family;
 		this.partnerShip = PartnerShip.MARRIED;
@@ -246,14 +182,6 @@ public class Person {
 	public final static Person of(PersonId id, FamilyName familyName, FirstName firstName, Sex sex, Birthday birthday,
 	    Country country) {
 		return new Person(id, familyName, firstName, sex, birthday, country);
-	}
-
-	/**
-	 * 
-	 * @return The list of marriage validations connected to this person
-	 */
-	private ValidateMarriage validations() {
-		return validations;
 	}
 
 	/**

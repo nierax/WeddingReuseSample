@@ -2,8 +2,6 @@ package de.lexasoft.wedding;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
 import java.util.stream.Stream;
@@ -13,9 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-
-import de.lexasoft.wedding.message.MessageSeverity;
-import de.lexasoft.wedding.message.NotAllowedToMarryMyselfError;
 
 class PersonTest {
 
@@ -65,39 +60,6 @@ class PersonTest {
 	@Test
 	final void family_initial_none() {
 		assertEquals(FamilyId.NONE, cut.family());
-	}
-
-	/**
-	 * Marriage to another person.
-	 */
-	@Test
-	final void marries_otherPerson() {
-		Person partner = Person.of(//
-		    FamilyName.of("Miller"), //
-		    FirstName.of("Maria"), //
-		    Sex.of(SexEnum.FEMALE), //
-		    Birthday.of(1999, 12, 22));
-
-		// Now they marry each other. Should return the partner.
-		Result<Person> result = cut.marries(partner);
-
-		// Are they married correctly?
-		assertEquals(cut, result.value());
-		assertTrue(cut.isMarried());
-		assertEquals(partner.id(), cut.marriedWithID());
-		assertTrue(partner.isMarried());
-		assertEquals(cut.id(), partner.marriedWithID());
-	}
-
-	@Test
-	final void not_allowed_to_marry_myself() {
-		// Try to marry myself.
-		Result<Person> result = cut.marries(cut);
-		assertEquals(MessageSeverity.ERROR, result.resultSeverity());
-		assertTrue(result.messages().get(0) instanceof NotAllowedToMarryMyselfError);
-		assertEquals(cut, result.value());
-		assertFalse(result.value().isMarried());
-		assertNull(result.value().marriedWithID());
 	}
 
 }
