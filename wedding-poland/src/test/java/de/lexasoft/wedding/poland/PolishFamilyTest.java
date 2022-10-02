@@ -23,6 +23,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import de.lexasoft.wedding.AbstractFamily;
 import de.lexasoft.wedding.BirthdayTestSupport;
 import de.lexasoft.wedding.Country;
 import de.lexasoft.wedding.Date;
@@ -90,20 +91,20 @@ class PolishFamilyTest {
 
 	@Test
 	final void partnership_not_married_after_creation() {
-		PolishFamily cut = PolishFamily.of(male_28_not_married, female_26_not_married);
+		AbstractFamily cut = PolishFamily.of(male_28_not_married, female_26_not_married);
 		assertEquals(PartnerShip.NOT_MARRIED, cut.partnerShip());
 	}
 
 	@Test
 	final void wedding_allowed_for_male_28_and_female_26() {
-		PolishFamily cut = PolishFamily.of(male_28_not_married, female_26_not_married);
+		AbstractFamily cut = PolishFamily.of(male_28_not_married, female_26_not_married);
 		List<Message> messages = cut.allowedToMarry();
 		assertEquals(0, messages.size());
 	}
 
 	@Test
 	final void wedding_not_allowed_for_male_28_and_female_16() {
-		PolishFamily cut = PolishFamily.of(male_28_not_married, female_16_not_married);
+		AbstractFamily cut = PolishFamily.of(male_28_not_married, female_16_not_married);
 		List<Message> messages = cut.allowedToMarry();
 		assertEquals(1, messages.size());
 		assertThat(messages, hasItem(new AtLeast18YearsOldForMarriageRequired(female_16_not_married)));
@@ -111,7 +112,7 @@ class PolishFamilyTest {
 
 	@Test
 	final void wedding_not_allowed_for_male_31_married_and_female_26() {
-		PolishFamily cut = PolishFamily.of(male_31_married, female_26_not_married);
+		AbstractFamily cut = PolishFamily.of(male_31_married, female_26_not_married);
 		List<Message> messages = cut.allowedToMarry();
 		assertEquals(1, messages.size());
 		assertThat(messages, hasItem(new MustNotBeMarriedBeforeError(male_31_married)));
@@ -127,8 +128,8 @@ class PolishFamilyTest {
 
 	@Test
 	final void wedding_ok() {
-		PolishFamily cut = PolishFamily.of(male_28_not_married, female_26_not_married);
-		Result<PolishFamily> result = cut.marry();
+		AbstractFamily cut = PolishFamily.of(male_28_not_married, female_26_not_married);
+		Result<AbstractFamily> result = cut.marry();
 		assertEquals(MessageSeverity.NONE, result.resultSeverity());
 		assertEquals(PartnerShip.MARRIED, result.value().partnerShip());
 		assertEquals(PartnerShip.MARRIED, result.value().partner1().partnerShip());
@@ -140,8 +141,8 @@ class PolishFamilyTest {
 
 	@Test
 	final void wedding_not_ok() {
-		PolishFamily cut = PolishFamily.of(male_28_not_married, female_16_not_married);
-		Result<PolishFamily> result = cut.marry();
+		AbstractFamily cut = PolishFamily.of(male_28_not_married, female_16_not_married);
+		Result<AbstractFamily> result = cut.marry();
 		assertEquals(MessageSeverity.ERROR, result.resultSeverity());
 		assertEquals(PartnerShip.NOT_MARRIED, result.value().partnerShip());
 		assertEquals(PartnerShip.NOT_MARRIED, result.value().partner1().partnerShip());
