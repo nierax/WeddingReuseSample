@@ -14,6 +14,7 @@
  */
 package de.lexasoft.wedding.usa;
 
+import de.lexasoft.wedding.ValidateAgeForMarriage;
 import de.lexasoft.wedding.ValidateMarriageRunner;
 import de.lexasoft.wedding.ValidateNotMarriedBefore;
 
@@ -28,7 +29,7 @@ public class USAMarriageValidations extends ValidateMarriageRunner {
 	 */
 	public USAMarriageValidations(USAState state) {
 		this.addValidation(ValidateNotMarriedBefore.of());
-//		this.addValidation(ValidateAgeForMarriage.of(state.minimumAge()));
+		this.addValidation(ValidateAgeForMarriage.of(state.minimumAge()));
 	}
 
 }
