@@ -23,6 +23,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import de.lexasoft.wedding.AbstractFamily;
 import de.lexasoft.wedding.BirthdayTestSupport;
 import de.lexasoft.wedding.Country;
 import de.lexasoft.wedding.Date;
@@ -148,7 +149,7 @@ class USAFamilyTest {
 	@Test
 	final void wedding_ok() {
 		USAFamily cut = USAFamily.of(male_28_not_married, female_26_not_married, USAState.OTHER);
-		Result<USAFamily> result = cut.marry();
+		Result<AbstractFamily> result = cut.marry();
 		assertEquals(MessageSeverity.NONE, result.resultSeverity());
 		assertEquals(PartnerShip.MARRIED, result.value().partnerShip());
 		assertEquals(PartnerShip.MARRIED, result.value().partner1().partnerShip());
@@ -161,7 +162,7 @@ class USAFamilyTest {
 	@Test
 	final void wedding_not_ok() {
 		USAFamily cut = USAFamily.of(male_28_not_married, female_16_not_married, USAState.OTHER);
-		Result<USAFamily> result = cut.marry();
+		Result<AbstractFamily> result = cut.marry();
 		assertEquals(MessageSeverity.ERROR, result.resultSeverity());
 		assertEquals(PartnerShip.NOT_MARRIED, result.value().partnerShip());
 		assertEquals(PartnerShip.NOT_MARRIED, result.value().partner1().partnerShip());
