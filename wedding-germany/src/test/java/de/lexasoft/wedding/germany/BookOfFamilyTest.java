@@ -17,8 +17,8 @@ package de.lexasoft.wedding.germany;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,10 +32,10 @@ import de.lexasoft.wedding.FirstName;
 import de.lexasoft.wedding.PartnerShip;
 import de.lexasoft.wedding.Person;
 import de.lexasoft.wedding.PersonId;
-import de.lexasoft.wedding.Result;
 import de.lexasoft.wedding.Sex;
 import de.lexasoft.wedding.SexEnum;
 import de.lexasoft.wedding.message.AtLeast18YearsOldForMarriageRequired;
+import de.lexasoft.wedding.message.Message;
 import de.lexasoft.wedding.message.MessageSeverity;
 import de.lexasoft.wedding.message.MustNotBeMarriedBeforeError;
 
@@ -106,82 +106,51 @@ class BookOfFamilyTest {
 
 	}
 
-	/**
-	 * KindOfParttnerShip must be initially set to NOT_MARRIED.
-	 */
-	@Test
-	final void kindOfPartnership_initial_NOT_MARRIED() {
-		assertEquals(PartnerShip.NOT_MARRIED, cut.kindOfPartnership());
-	}
-
 	@Test
 	final void dateOfCreation_is_today_after_creation() {
 		assertEquals(Date.of(), cut.dateOfCreation());
 	}
 
 	@Test
-	final void dateOfWedding_is_NONE_after_creation() {
-		assertEquals(Date.NONE.value(), cut.dateOfWedding().value());
-	}
-
-	@Test
-	final void two_partner_in_family_after_creation() {
-		assertEquals(2, cut.partner().size());
-	}
-
-	@Test
 	final void people_must_not_marry_when_one_of_them_is_already_married() {
 		BookOfFamily myCut = BookOfFamily.of(male_28, married_person);
-		Result<Boolean> result = myCut.allowedToMarry();
-		assertFalse(result.value());
-		assertEquals(MessageSeverity.ERROR, result.resultSeverity());
-		assertThat(result.messages(), hasItem(new MustNotBeMarriedBeforeError(married_person)));
+		List<Message> messages = myCut.allowedToMarry();
+		assertEquals(1, messages.size());
+		assertEquals(MessageSeverity.ERROR, messages.get(0).severity());
+		assertThat(messages, hasItem(new MustNotBeMarriedBeforeError(married_person)));
 	}
 
 	@Test
 	final void people_must_be_allowed_to_marry_when_everything_is_right() {
-		Result<Boolean> result = cut.allowedToMarry();
-		assertTrue(result.value());
-		assertEquals(MessageSeverity.NONE, result.resultSeverity());
-		assertEquals(0, result.messages().size());
+		List<Message> messages = cut.allowedToMarry();
+		assertEquals(0, messages.size());
 	}
 
 	@Test
 	final void must_be_allowed_to_marry_at_18_years_old() {
 		BookOfFamily myCut = BookOfFamily.of(male_18, female_26);
-		Result<Boolean> result = myCut.allowedToMarry();
-		assertTrue(result.value());
-		assertEquals(MessageSeverity.NONE, result.resultSeverity());
-		assertEquals(0, result.messages().size());
+		List<Message> messages = myCut.allowedToMarry();
+		assertEquals(0, messages.size());
 	}
 
 	@Test
 	final void marriage_not_permitted_when_under_18_years_old() {
 		BookOfFamily myCut = BookOfFamily.of(male_18, female_17);
-		Result<Boolean> result = myCut.allowedToMarry();
-		assertFalse(result.value());
-		assertEquals(MessageSeverity.ERROR, result.resultSeverity());
-		assertThat(result.messages(), hasItem(new AtLeast18YearsOldForMarriageRequired(female_17)));
+		List<Message> messages = myCut.allowedToMarry();
+		assertEquals(1, messages.size());
+		assertEquals(MessageSeverity.ERROR, messages.get(0).severity());
+		assertThat(messages, hasItem(new AtLeast18YearsOldForMarriageRequired(female_17)));
 	}
 
 	@Test
 	final void married_and_too_young_all_messages_required() {
 		BookOfFamily myCut = BookOfFamily.of(married_person, female_17);
-		Result<Boolean> result = myCut.allowedToMarry();
-		assertFalse(result.value());
-		assertEquals(MessageSeverity.ERROR, result.resultSeverity());
-		assertThat(result.messages(), hasItem(new AtLeast18YearsOldForMarriageRequired(female_17)));
-		assertThat(result.messages(), hasItem(new MustNotBeMarriedBeforeError(married_person)));
-	}
-
-	@Test
-	final void marry_when_requirements_are_fulfilled() {
-		Result<BookOfFamily> result = cut.marry();
-		assertEquals(MessageSeverity.NONE, result.resultSeverity());
-		assertEquals(Date.TODAY, cut.dateOfWedding());
-		for (Person partner : cut.partner()) {
-			assertEquals(PartnerShip.MARRIED, partner.partnerShip());
-		}
+		List<Message> messages = myCut.allowedToMarry();
+		assertEquals(2, messages.size());
+		assertEquals(MessageSeverity.ERROR, messages.get(0).severity());
+		assertEquals(MessageSeverity.ERROR, messages.get(1).severity());
+		assertThat(messages, hasItem(new AtLeast18YearsOldForMarriageRequired(female_17)));
+		assertThat(messages, hasItem(new MustNotBeMarriedBeforeError(married_person)));
 	}
 
 }

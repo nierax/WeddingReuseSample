@@ -14,17 +14,10 @@
  */
 package de.lexasoft.wedding.germany;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import de.lexasoft.wedding.AbstractFamily;
 import de.lexasoft.wedding.Date;
 import de.lexasoft.wedding.FamilyId;
-import de.lexasoft.wedding.PartnerShip;
 import de.lexasoft.wedding.Person;
-import de.lexasoft.wedding.Result;
-import de.lexasoft.wedding.ValidateAgeForMarriage;
-import de.lexasoft.wedding.ValidateNotMarriedBefore;
-import de.lexasoft.wedding.message.Message;
 
 /**
  * Represents the book of the family in Germany.
@@ -32,24 +25,16 @@ import de.lexasoft.wedding.message.Message;
  * @author nierax
  *
  */
-public class BookOfFamily {
+public class BookOfFamily extends AbstractFamily {
 
-	private final FamilyId id;
-	private final List<Person> partner = new ArrayList<>();
-	private PartnerShip kindOfPartnership;
 	private final Date dateOfCreation;
-	private Date dateOfWedding;
 
 	/**
 	 * 
 	 */
 	private BookOfFamily(FamilyId id, Person partner1, Person partner2) {
-		this.partner.add(partner1);
-		this.partner.add(partner2);
-		this.kindOfPartnership = PartnerShip.NOT_MARRIED;
-		this.id = id;
-		this.dateOfCreation = Date.of();
-		this.dateOfWedding = Date.NONE;
+		super(id, new GermanMarriageValidations(), partner1, partner2);
+		this.dateOfCreation = Date.TODAY;
 	}
 
 	/**
@@ -77,84 +62,11 @@ public class BookOfFamily {
 		return of(FamilyId.of(), partner1, partner2);
 	}
 
-	private List<Message> checkNotMarriedBefore() {
-		return ValidateNotMarriedBefore.of().marriageAllowed(partner.get(0), partner.get(1));
-	}
-
-	private List<Message> checkPartnerAtLeast18YearsOld() {
-		return ValidateAgeForMarriage.of(18).marriageAllowed(partner.get(0), partner.get(1));
-	}
-
-	/**
-	 * Checks, whether both partners are allowed to marry according to laws in
-	 * Germany.
-	 * 
-	 * @return
-	 */
-	public Result<Boolean> allowedToMarry() {
-		List<Message> messages = new ArrayList<>();
-		messages.addAll(checkPartnerAtLeast18YearsOld());
-		messages.addAll(checkNotMarriedBefore());
-		return Result.of(Boolean.valueOf(messages.size() == 0), messages);
-	}
-
-	/**
-	 * Makes the persons in this family married, if all requirements are fulfilled.
-	 * 
-	 * @return Result with the instance of this object in it.
-	 */
-	public Result<BookOfFamily> marry() {
-		Result<Boolean> ok = allowedToMarry();
-		if (ok.value()) {
-			dateOfWedding(Date.TODAY);
-			partner.forEach(p -> p.marries(id));
-		}
-		return Result.of(this);
-	}
-
-	/**
-	 * The kind of partnership initially is set to NOT_MARRIED. The state can be
-	 * changed by several use cases.
-	 * 
-	 * @return The kindOfPartnership
-	 */
-	public PartnerShip kindOfPartnership() {
-		return kindOfPartnership;
-	}
-
-	/**
-	 * @return the id
-	 */
-	public FamilyId id() {
-		return id;
-	}
-
-	/**
-	 * @return the dateOfWedding
-	 */
-	public Date dateOfWedding() {
-		return dateOfWedding;
-	}
-
-	/**
-	 * @param dateOfWedding the dateOfWedding to set
-	 */
-	private Date dateOfWedding(Date dateOfWedding) {
-		return (this.dateOfWedding = dateOfWedding);
-	}
-
 	/**
 	 * @return the dateOfCreation
 	 */
 	public Date dateOfCreation() {
 		return dateOfCreation;
-	}
-
-	/**
-	 * @return The partner in this family.
-	 */
-	public List<Person> partner() {
-		return new ArrayList<Person>(partner);
 	}
 
 }
