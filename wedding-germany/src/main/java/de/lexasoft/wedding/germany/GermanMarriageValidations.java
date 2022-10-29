@@ -24,7 +24,7 @@ import de.lexasoft.wedding.ValidateNotMarriedBefore;
  */
 public class GermanMarriageValidations extends ValidateMarriageRunner {
 
-	public final static int MINIMUM_AGE = 18;
+	public final static int MINIMUM_AGE = 19;
 
 	/**
 	 * 
