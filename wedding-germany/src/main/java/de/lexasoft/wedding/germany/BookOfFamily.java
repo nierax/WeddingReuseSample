@@ -34,7 +34,7 @@ import de.lexasoft.wedding.message.Message;
  */
 public class BookOfFamily {
 
-	public static final int MINIMUM_AGE = 18;
+	public static final int MINIMUM_AGE = 19;
 
 	private final FamilyId id;
 	private final List<Person> partner = new ArrayList<>();
