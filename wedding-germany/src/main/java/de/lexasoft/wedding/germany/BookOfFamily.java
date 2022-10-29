@@ -34,6 +34,8 @@ import de.lexasoft.wedding.message.Message;
  */
 public class BookOfFamily {
 
+	public static final int MINIMUM_AGE = 18;
+
 	private final FamilyId id;
 	private final List<Person> partner = new ArrayList<>();
 	private PartnerShip kindOfPartnership;
@@ -81,8 +83,8 @@ public class BookOfFamily {
 		return ValidateNotMarriedBefore.of().marriageAllowed(partner.get(0), partner.get(1));
 	}
 
-	private List<Message> checkPartnerAtLeast18YearsOld() {
-		return ValidateAgeForMarriage.of(18).marriageAllowed(partner.get(0), partner.get(1));
+	private List<Message> checkBothPartnersHaveMimiumAge(int minimum_age) {
+		return ValidateAgeForMarriage.of(minimum_age).marriageAllowed(partner.get(0), partner.get(1));
 	}
 
 	/**
@@ -93,7 +95,7 @@ public class BookOfFamily {
 	 */
 	public Result<Boolean> allowedToMarry() {
 		List<Message> messages = new ArrayList<>();
-		messages.addAll(checkPartnerAtLeast18YearsOld());
+		messages.addAll(checkBothPartnersHaveMimiumAge(MINIMUM_AGE));
 		messages.addAll(checkNotMarriedBefore());
 		return Result.of(Boolean.valueOf(messages.size() == 0), messages);
 	}
